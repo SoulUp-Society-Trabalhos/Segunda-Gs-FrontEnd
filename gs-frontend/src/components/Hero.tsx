@@ -1,5 +1,6 @@
-    import ponte from "../assets/imagensHero/ponte.jpg";
+import ponte from "../assets/imagensHero/ponte.jpg";
 import ceu from "../assets/imagensHero/ceu.jpg"
+import cidade from "../assets/imagensHero/cidade.jpg"
 
 type HeroProps = {
   titulo: string;
@@ -24,9 +25,9 @@ export default function Hero({ titulo, descricao }: HeroProps) {
 
       <div className="mt-[2vw] flex items-center justify-center gap-[3vw] font-anton" aria-hidden="true">
         <img
-          src={ponte}
+          src={cidade}
           alt="Nuvens no céu azul"
-          className="h-[12vw] w-[40vw] rounded-md object-cover"
+          className="h-[15vw] w-[26vw] rounded-md object-cover"
         />
         {resto.length > 0 && (
           <span className="text-[15vw] leading-[0.95]">{resto.join(" ")}</span>

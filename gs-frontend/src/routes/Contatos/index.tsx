@@ -1,6 +1,5 @@
 
-
-export default function Contatos() {
+export default function Contatos() {  
   return (
     <footer>
         
