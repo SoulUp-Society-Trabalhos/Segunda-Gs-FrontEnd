@@ -27,7 +27,7 @@ export default function Footer() {
 
         <div className="mb-6 flex items-center gap-3 text-sm sm:text-base">
           <MdEmail />
-          <span>soulup@gmail.com</span>
+          <span>minicity@gmail.com</span>
         </div>
 
         <form
