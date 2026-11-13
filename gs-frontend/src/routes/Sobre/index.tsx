@@ -16,7 +16,7 @@ export default function Sobre() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             <article className="rounded-lg bg-black p-6 text-[#01c853]">
               <p>
-                A MiniCity é uma startup criada em Novembro de 2026 com a intenção de ajudar na distribuição de notícias geograficamente relevantes para a população. Focamos em ajudar os usuários a conhecer melhor o seu redor, além de incentivar a prática da cidadania. 
+                A MiniCity é uma startup criada em Novembro de 2026 baseada nos famosos mini mapas de videogames. Temos intenção de ajudar na distribuição de notícias geograficamente relevantes para a população. Focamos em ajudar os usuários a conhecer melhor o seu redor, além de incentivar a prática da cidadania. 
               </p>
             </article>
 

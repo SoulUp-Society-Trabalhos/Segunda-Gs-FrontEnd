@@ -8,7 +8,7 @@ export default function Home() {
     <main>
       <Hero
         titulo="Mini City"
-        descricao="Apresentação geral dos membros da nossa equipe."
+        descricao="O mini mapa de sua cidade!"
       />
 
       <section className="bg-black px-[5%] py-20">
