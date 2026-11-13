@@ -3,24 +3,24 @@ import Hero from "../../components/Hero";
 
 const perguntas = [
   {
-    pergunta: "Lorem ipsum dolor sit amet?",
+    pergunta: "O que é a MiniCity?",
     resposta:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "A MiniCity é uma startup que nasceu do desejo de ajudar as pessoas a organizar melhor a própria rotina, conhecendo mais sobre o local onde moram, seus acontecimentos e estabelecimentos, entregando as notícias mais relevantes para os moradores desta localidade.",
   },
   {
-    pergunta: "Consectetur adipiscing elit?",
+    pergunta: "Quais são os trabalhos atuais da MiniCity?",
     resposta:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "Atualmente estamos desenvolvendo nosso aplicativo de mesmo nome, que permitirá ao usuário consultar mapas geolocalizados com notícias, relatórios de cidadãos e estabelecimentos bem avaliados. Com isso, visamos facilitar o consumo de notícias relevantes geograficamente para as pessoas, além de incentivar o exercício da cidadania e ajudar a conhecer melhor a própria região e trajeto.",
   },
   {
-    pergunta: "Sed do eiusmod tempor incididunt?",
+    pergunta: "É necessário pagar para utilizar a MiniCity?",
     resposta:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "Não, tanto o download do aplicativo quanto a utilização dos mapas e serviços é completamente gratuita. Entretanto, empreendedores e donos de estabelecimentos comerciais poderão assinar nossos planos para impulsionar o próprio estabelecimento dentro de nossos mapas, além de ganhar um selo de qualidade especial.",
   },
   {
-    pergunta: "Ut enim ad minim veniam?",
+    pergunta: "Quais são as principais funcionalidades do aplicativo da MiniCity?",
     resposta:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "As pricipais funcionalidades de nosso apllicativo são a consulta do mapa de notícias e relatórios, a consulta do mapa de estabelecimentos, a escrita de relatórios dos próprios usuários, o impulsionamento de estabelecimentos de assinantes de nossos planos, o salvamento de locais e a visualização de notícias relevantes a nível nacional.",
   },
 ];
 
@@ -34,8 +34,8 @@ export default function Faq() {
   return (
     <main>
       <Hero
-        titulo="FREQUENT QUESTIONS"
-        descricao="Apresentação geral dos membros da nossa equipe."
+        titulo="PERGUNTAS FREQUENTES"
+        descricao="Veja as dúvidas mais comuns que giram em torno de nosso projeto!"
       />
       <section className="bg-[#01c853] font-anton text-black">
         <div className="mx-auto max-w-3xl px-6 py-12">

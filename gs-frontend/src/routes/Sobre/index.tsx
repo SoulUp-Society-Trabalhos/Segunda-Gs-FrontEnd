@@ -5,7 +5,7 @@ export default function Sobre() {
     <main>
       <Hero
         titulo="SOBRE NÓS"
-        descricao="Apresentação geral dos membros da nossa equipe."
+        descricao="Conheça mais sobre a MiniCity!"
       />
       <section className="bg-[#01c853] font-anton">
         <div className="mx-auto max-w-6xl px-6 py-12">
