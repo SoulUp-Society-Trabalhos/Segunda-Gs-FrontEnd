@@ -16,8 +16,7 @@ export default function Footer() {
         <h3 className="mb-5 text-xl font-semibold sm:text-2xl">Um pouco sobre nós</h3>
 
         <p className="mb-6 text-sm leading-6 opacity-80 sm:text-base sm:leading-7">
-          Startup criada visando ao aperfeiçoamento da rede social SoulUp,
-          focando em áreas como a sustentabilidade e a mobilidade.
+          Startup criada visando ao compartilhamento de notícias geograficamente relevantes através de mapas geolocalizados, também incentivando a participação do cidadão na sociedade.
         </p>
 
         <div className="mb-3 flex items-center gap-3 text-sm sm:text-base">

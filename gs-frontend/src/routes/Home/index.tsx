@@ -7,7 +7,7 @@ export default function Home() {
   return (
     <main>
       <Hero
-        titulo="GLOBAL SOLUTION"
+        titulo="Mini City"
         descricao="Apresentação geral dos membros da nossa equipe."
       />
 
