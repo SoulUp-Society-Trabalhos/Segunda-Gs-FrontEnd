@@ -1,4 +1,3 @@
-import ponte from "../assets/imagensHero/ponte.jpg";
 import ceu from "../assets/imagensHero/ceu.jpg"
 import cidade from "../assets/imagensHero/cidade.jpg"
 

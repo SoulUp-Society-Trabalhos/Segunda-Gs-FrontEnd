@@ -2,7 +2,7 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router'
 
-import './globals.css'
+import './styles/globals.css'
 
 import App from './App.tsx'
 import Contatos from './routes/Contatos/index.tsx'
