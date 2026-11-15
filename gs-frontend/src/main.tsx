@@ -1,21 +1,24 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import { createBrowserRouter, RouterProvider } from 'react-router'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router";
 
-import './styles/globals.css'
+import "./styles/globals.css";
 
-import App from './App.tsx'
-import Contatos from './routes/Contatos/index.tsx'
-import Faq from './routes/Faq/index.tsx'
-import Home from './routes/Home/index.tsx'
-import Integrantes from './routes/Integrantes/index.tsx'
-import Sobre from './routes/Sobre/index.tsx'
-import ErrorPage from './routes/ErrorPage/index.tsx'
-import Proposta2 from './routes/Proposta2/index.tsx'
-import Proposta from './routes/Proposta/index.tsx'
-import AuthPage from './routes/App/AuthPage/index.tsx'
-import Cadastro from './routes/App/Cadastro/index.tsx'
-import Login from './routes/App/Login/index.tsx'
+import ProtectedRoute from "./routes/App/ProtectedRoute.tsx";
+
+import App from "./App.tsx";
+import Contatos from "./routes/Contatos/index.tsx";
+import Faq from "./routes/Faq/index.tsx";
+import Home from "./routes/Home/index.tsx";
+import Integrantes from "./routes/Integrantes/index.tsx";
+import Sobre from "./routes/Sobre/index.tsx";
+import ErrorPage from "./routes/ErrorPage/index.tsx";
+import Proposta2 from "./routes/Proposta2/index.tsx";
+import Proposta from "./routes/Proposta/index.tsx";
+import AuthPage from "./routes/App/AuthPage/index.tsx";
+import Cadastro from "./routes/App/Cadastro/index.tsx";
+import Login from "./routes/App/Login/index.tsx";
+import HomePage from "./routes/App/HomePage/index.tsx";
 
 const router = createBrowserRouter([
   {
@@ -62,6 +65,16 @@ const router = createBrowserRouter([
       {
         path: "app/login",
         element: <Login />,
+      },
+      {
+        path: "app",
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: "home-page",
+            element: <HomePage />,
+          },
+        ],
       },
     ],
   },

@@ -1,96 +1,202 @@
-import { Link } from "react-router";
+
+import { useState } from "react";
+import { Link, useNavigate } from "react-router";
+import ModalSucesso from "../../../components/ModalSucesso";
 
 export default function Cadastro() {
-  return (
-    <main className="min-h-screen bg-black flex items-center justify-center px-6 py-10 font-nunito">
 
-      <section className="w-full max-w-md">
+    const navigate = useNavigate();
 
-        {/* Título */}
-        <div className="text-center mb-10">
-          <h1 className="text-5xl font-bold text-white mb-4">
-            MiniCity<span className="text-[#01c853]">.</span>
-          </h1>
+    // Estados dos campos
+    const [nome, setNome] = useState("");
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
 
-          <h2 className="text-2xl font-bold text-white mb-2">
-            Crie sua conta
-          </h2>
+    // Estados das mensagens
+    const [erro, setErro] = useState("");
+    const [carregando, setCarregando] = useState(false);
 
-          <p className="text-gray-400 font-medium">
-            Faça parte da nossa comunidade!
-          </p>
-        </div>
+    // Estado do modal
+    const [modalAberto, setModalAberto] = useState(false);
 
-        {/* Formulário */}
-        <form className="flex flex-col gap-5">
+    // Função para cadastrar
+    async function cadastrar(event: React.FormEvent<HTMLFormElement>) {
 
-          {/* Nome */}
-          <div className="flex flex-col gap-2">
-            <label className="text-white font-medium">
-              Nome
-            </label>
+        event.preventDefault();
 
-            <input
-              type="text"
-              placeholder="Digite seu nome"
-              required
-              className="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-white outline-none focus:border-[#01c853] transition-colors placeholder:text-gray-500"
+        setErro("");
+        setCarregando(true);
+
+        try {
+
+            const resposta = await fetch("/api/pessoas", {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                credentials: "include",
+
+                body: JSON.stringify({
+                    nome: nome,
+                    email: email,
+                    senha: senha
+                })
+            });
+
+            const dados = await resposta.json().catch(() => null);
+
+            // Verifica se ocorreu algum erro
+            if (!resposta.ok) {
+                throw new Error(
+                    dados?.mensagem ||
+                    dados?.erro ||
+                    "Não foi possível realizar o cadastro."
+                );
+            }
+
+            // Abre o modal de sucesso
+            setModalAberto(true);
+
+        } catch (error) {
+
+            if (error instanceof Error) {
+                setErro(error.message);
+            } else {
+                setErro("Erro ao conectar com o servidor.");
+            }
+
+        } finally {
+            setCarregando(false);
+        }
+    }
+
+    return (
+        <main className="min-h-screen bg-black flex items-center justify-center px-6 py-10 font-nunito">
+
+            <section className="w-full max-w-md">
+
+                {/* Título */}
+                <div className="text-center mb-10">
+
+                    <h1 className="text-5xl font-bold text-white mb-4">
+                        MiniCity<span className="text-[#01c853]">.</span>
+                    </h1>
+
+                    <h2 className="text-2xl font-bold text-white mb-2">
+                        Crie sua conta
+                    </h2>
+
+                    <p className="text-gray-400 font-medium">
+                        Faça parte da nossa comunidade!
+                    </p>
+
+                </div>
+
+                {/* Formulário */}
+                <form onSubmit={cadastrar} className="flex flex-col gap-5">
+
+                    {/* Nome */}
+                    <div className="flex flex-col gap-2">
+
+                        <label className="text-white font-medium">
+                            Nome
+                        </label>
+
+                        <input
+                            type="text"
+                            placeholder="Digite seu nome"
+                            value={nome}
+                            onChange={(e) => setNome(e.target.value)}
+                            minLength={3}
+                            maxLength={100}
+                            required
+                            className="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-white outline-none focus:border-[#01c853] transition-colors placeholder:text-gray-500"
+                        />
+
+                    </div>
+
+                    {/* Email */}
+                    <div className="flex flex-col gap-2">
+
+                        <label className="text-white font-medium">
+                            E-mail
+                        </label>
+
+                        <input
+                            type="email"
+                            placeholder="Digite seu e-mail"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                            className="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-white outline-none focus:border-[#01c853] transition-colors placeholder:text-gray-500"
+                        />
+
+                    </div>
+
+                    {/* Senha */}
+                    <div className="flex flex-col gap-2">
+
+                        <label className="text-white font-medium">
+                            Senha
+                        </label>
+
+                        <input
+                            type="password"
+                            placeholder="Digite sua senha"
+                            value={senha}
+                            onChange={(e) => setSenha(e.target.value)}
+                            minLength={8}
+                            required
+                            className="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-white outline-none focus:border-[#01c853] transition-colors placeholder:text-gray-500"
+                        />
+
+                    </div>
+
+                    {/* Mensagem de erro */}
+                    {erro && (
+                        <p className="text-red-500 text-sm text-center font-medium">
+                            {erro}
+                        </p>
+                    )}
+
+                    {/* Botão cadastrar */}
+                    <button
+                        type="submit"
+                        disabled={carregando}
+                        className="w-full bg-[#01c853] text-black py-4 rounded-xl font-bold text-base hover:bg-green-400 transition-all duration-300 cursor-pointer mt-3 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        {carregando ? "Cadastrando..." : "Criar minha conta"}
+                    </button>
+
+                </form>
+
+                {/* Redirecionamento para login */}
+                <p className="text-center text-gray-400 mt-8">
+
+                    Já possui uma conta?
+
+                    <Link
+                        to="/app/login"
+                        className="text-[#01c853] font-bold ml-2 hover:underline"
+                    >
+                        Fazer login
+                    </Link>
+
+                </p>
+
+            </section>
+
+            {/* Modal de sucesso */}
+            <ModalSucesso
+                aberto={modalAberto}
+                titulo="Conta criada!"
+                mensagem="Seu cadastro foi realizado com sucesso. Agora você já pode acessar sua conta MiniCity."
+                textoBotao="Ir para o login"
+                onConfirmar={() => navigate("/app/login")}
             />
-          </div>
 
-          {/* Email */}
-          <div className="flex flex-col gap-2">
-            <label className="text-white font-medium">
-              E-mail
-            </label>
-
-            <input
-              type="email"
-              placeholder="Digite seu e-mail"
-              required
-              className="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-white outline-none focus:border-[#01c853] transition-colors placeholder:text-gray-500"
-            />
-          </div>
-
-          {/* Senha */}
-          <div className="flex flex-col gap-2">
-            <label className="text-white font-medium">
-              Senha
-            </label>
-
-            <input
-              type="password"
-              placeholder="Digite sua senha"
-              required
-              minLength={6}
-              className="w-full bg-[#111] border border-gray-700 rounded-xl px-4 py-3 text-white outline-none focus:border-[#01c853] transition-colors placeholder:text-gray-500"
-            />
-          </div>
-
-          {/* Botão cadastrar */}
-          <button
-            type="submit"
-            className="w-full bg-[#01c853] text-black py-4 rounded-xl font-bold text-base hover:bg-green-400 transition-all duration-300 cursor-pointer mt-3"
-          >
-            Criar minha conta
-          </button>
-
-        </form>
-
-        {/* Redirecionamento para login */}
-        <p className="text-center text-gray-400 mt-8">
-          Já possui uma conta?
-
-          <Link
-            to="/app/login"
-            className="text-[#01c853] font-bold ml-2 hover:underline"
-          >
-            Fazer login
-          </Link>
-        </p>
-
-      </section>
-
-    </main>
-  );
+        </main>
+    );
 }

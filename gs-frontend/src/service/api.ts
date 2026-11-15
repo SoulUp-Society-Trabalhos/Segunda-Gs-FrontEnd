@@ -1,6 +1,9 @@
 const API_URL = "/api";
 
-export async function api(endpoint: string, options: RequestInit = {}) {
+export async function api(
+    endpoint: string,
+    options: RequestInit = {}
+) {
     const resposta = await fetch(`${API_URL}${endpoint}`, {
         credentials: "include",
         ...options,
@@ -11,7 +14,13 @@ export async function api(endpoint: string, options: RequestInit = {}) {
     });
 
     if (!resposta.ok) {
-        throw new Error(`Erro na requisição (${resposta.status})`);
+        const dados = await resposta.json().catch(() => null);
+
+        throw new Error(
+            dados?.mensagem ||
+            dados?.erro ||
+            `Erro na requisição (${resposta.status})`
+        );
     }
 
     return resposta;
