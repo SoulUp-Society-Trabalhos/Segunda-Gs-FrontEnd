@@ -1,14 +1,68 @@
 import { Link } from "react-router";
+import { useState } from "react";
 
 export default function Cabecalho() {
+  const [dropdownAberto, setDropdownAberto] = useState(false);
+
   return (
     <header className="sticky top-0 z-10 grid grid-cols-[1fr_auto_1fr] items-center bg-black px-11 py-5.5 font-[IBM_Plex_Mono]">
       <nav className="flex gap-10 text-xs uppercase text-white">
-        <Link to="/" className="text-base font-nunito font-medium">Home</Link>
-        <button type="button" className="uppercase text-base font-nunito font-medium">Soluções</button>
-        <Link to="/integrantes" className="text-base font-nunito font-medium">Integrantes</Link>
-        <Link to="/faq" className=" text-base font-nunito font-medium">Faq</Link>
-        <Link to="/sobre" className="text-base font-nunito font-medium">Sobre</Link>
+        <Link to="/" className="text-base font-nunito font-medium">
+          Home
+        </Link>
+
+        <li className="relative list-none font-nunito font-medium">
+          <button
+            onClick={() => setDropdownAberto(!dropdownAberto)}
+            className="flex items-center gap-2 cursor-pointer font-nunito font-medium text-base"
+          >
+            PROPOSTAS
+            <span
+              className={`transition-transform duration-200 ${
+                dropdownAberto ? "rotate-180" : ""
+              }`}
+            >
+              ▼
+            </span>
+          </button>
+
+          {dropdownAberto && (
+            <ul className="absolute left-0 top-full mt-2 w-44 bg-black border border-[#01c853] rounded-lg shadow-lg overflow-hidden z-50">
+              <li>
+                <Link
+                  to="/proposta/"
+                  onClick={() => setDropdownAberto(false)}
+                  className="block px-4 py-3 text-white hover:bg-[#01c853] hover:text-black transition-colors font-nunito font-medium"
+                >
+                  Proposta 1
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  to="/proposta2/"
+                  onClick={() => setDropdownAberto(false)}
+                  className="block px-4 py-3 text-white hover:bg-[#01c853] hover:text-black transition-colors font-nunito font-medium"
+                >
+                  Proposta 2
+                </Link>
+              </li>
+            </ul>
+          )}
+        </li>
+
+        <Link to="/integrantes" className="text-base font-nunito font-medium">
+          Integrantes
+        </Link>
+        <Link to="/faq" className=" text-base font-nunito font-medium">
+          Faq
+        </Link>
+        <Link to="/sobre" className="text-base font-nunito font-medium">
+          Sobre
+        </Link>
+        <Link to="/app/authpage" className="text-base font-nunito font-medium">
+          PROTOTIPO
+        </Link>
       </nav>
 
       <Link to="/" aria-label="Início">
