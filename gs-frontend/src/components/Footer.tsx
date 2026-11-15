@@ -7,8 +7,8 @@ export default function Footer() {
     { label: "Integrantes", href: "/integrantes" },
     { label: "Sobre", href: "/sobre" },
     { label: "Faq", href: "/faq" },
-    { label: "Pág. Solução 1", href: "/solucao-1" },
-    { label: "Pág. Solução 2", href: "/solucao-2" },
+    { label: "Pág. Solução 1", href: "/proposta" },
+    { label: "Pág. Solução 2", href: "/proposta2" },
   ];
   return (
     <footer className="bg-black px-[5%] pb-8 pt-16 font-['Montserrat',sans-serif] text-[#00c852]">

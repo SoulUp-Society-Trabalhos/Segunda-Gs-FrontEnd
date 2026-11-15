@@ -58,7 +58,7 @@ export default function Login() {
         {/* Título */}
         <div className="text-center mb-10">
           <h1 className="text-5xl font-bold text-white mb-4">
-            SOULUP<span className="text-[#01c853]">.</span>
+            MiniCity<span className="text-[#01c853]">.</span>
           </h1>
 
           <h2 className="text-2xl font-bold text-white mb-2">

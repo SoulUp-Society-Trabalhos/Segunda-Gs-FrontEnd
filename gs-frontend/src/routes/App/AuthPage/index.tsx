@@ -14,12 +14,11 @@ export default function AuthPage() {
 
         {/* Apresentação */}
         <h2 className="text-2xl font-bold text-white mb-4">
-          Saiba o que há no seu ao redor ! 
+          Saiba o que há ao seu ao redor! 
         </h2>
 
         <p className="text-gray-400 font-medium text-base leading-relaxed mb-10">
-          Conecte-se, participe de missões sustentáveis,
-          acumule pontos e transforme sua mobilidade.
+          Conheça sua vizinhança e facilite o planejamento de sua rotina.
         </p>
 
         {/* Botões */}
@@ -43,7 +42,7 @@ export default function AuthPage() {
 
         {/* Rodapé */}
         <p className="text-gray-500 text-sm mt-10 font-nunito font-medium">
-          Pequenas atitudes. Grandes transformações.
+          Um mapa. Diversos caminhos.
         </p>
 
       </section>
