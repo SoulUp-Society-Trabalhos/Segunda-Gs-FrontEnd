@@ -24,7 +24,7 @@ export default function Proposta2() {
         </div>
 
         <div className="flex-1">
-          <img src={masp} alt="" className="w-full h-72 object-cover rounded-xl" />
+          <img src={masp} alt="Museu de Arte de São Paulo" className="w-full h-72 object-cover rounded-xl" />
         </div>
       </section>
 
@@ -41,7 +41,7 @@ export default function Proposta2() {
         </div>
 
         <div className="flex-1">
-          <img src={ponteCeuBonito} alt="" className="w-full h-72 object-cover rounded-xl" />
+          <img src={ponteCeuBonito} alt="Ponte com céu ensolarado de fundo" className="w-full h-72 object-cover rounded-xl" />
         </div>
       </section>
 
@@ -58,7 +58,7 @@ export default function Proposta2() {
         </div>
 
         <div className="flex-1">
-          <img src={noite1} alt="" className="w-full h-72 object-cover rounded-xl" />
+          <img src={noite1} alt="Noite em São Paulo" className="w-full h-72 object-cover rounded-xl" />
         </div>
       </section>
     </main>
