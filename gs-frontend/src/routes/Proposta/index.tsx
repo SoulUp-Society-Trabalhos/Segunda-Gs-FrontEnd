@@ -19,7 +19,7 @@ export default function Proposta() {
           </h2>
 
           <p className="text-lg leading-relaxed text-left">
-            A proposta principal da MiniCity é criar um aplicativo que disponibilize um mapa com notícias dispostas de forma geolocalizada, exibindo acontecimentos relevantess geograficamente para o usuário, para que este possa estar ciente do que acontece em sua vizinhança. As notícias serão adquiridas por meio de fontes confiáveis e seguras, aparecendo no mapa com um breve resumo e o link da fonte para que a notícia possa ser validada.
+            A proposta principal da MiniCity é criar um aplicativo que disponibilize um mapa com notícias dispostas de forma geolocalizada, exibindo acontecimentos relevantes geograficamente para o usuário, para que este possa estar ciente do que acontece em sua vizinhança. As notícias serão adquiridas por meio de fontes confiáveis e seguras, aparecendo no mapa com um breve resumo e o link da fonte para que a notícia possa ser validada.
           </p>
         </div>
 
