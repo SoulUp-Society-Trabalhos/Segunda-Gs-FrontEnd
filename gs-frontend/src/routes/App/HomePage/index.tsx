@@ -262,49 +262,47 @@ export default function HomePage() {
                   </p>
                 )}
 
-              <div className="flex flex-col gap-4 max-h-[480px] overflow-y-auto pr-2">
+              <div className="flex flex-col gap-3 max-h-[520px] overflow-y-auto pr-2">
                 {noticias.map((noticia, index) => (
                   <article
                     key={`${noticia.url}-${index}`}
-                    className="bg-[#151515] border border-gray-800 rounded-xl overflow-hidden"
+                    className="flex gap-3 bg-[#151515] border border-gray-800 rounded-xl p-3 hover:border-[#00c853]/50 transition"
                   >
-                    {noticia.urlToImage && (
+                    {/* IMAGEM À ESQUERDA */}
+                    {noticia.urlToImage ? (
                       <img
                         src={noticia.urlToImage}
-                        alt={noticia.title || "Imagem da notícia"}
-                        className="w-full h-36 object-cover"
+                        alt=""
+                        className="w-24 h-24 shrink-0 rounded-lg object-cover"
                         loading="lazy"
                       />
+                    ) : (
+                      <div className="w-24 h-24 shrink-0 rounded-lg bg-[#252525] flex items-center justify-center">
+                        <span className="text-gray-500 text-xs text-center">
+                          Sem imagem
+                        </span>
+                      </div>
                     )}
 
-                    <div className="p-4 flex flex-col gap-2">
-                      <p className="text-[#00c853] text-xs font-bold">
+                    {/* CONTEÚDO À DIREITA */}
+                    <div className="flex flex-col flex-1 min-w-0 gap-1">
+                      <p className="text-[#00c853] text-xs font-bold truncate">
                         {noticia.source?.name || "Notícia"}
                       </p>
 
-                      <h3 className="font-nunito font-bold text-white">
+                      <h3 className="font-nunito font-bold text-white text-sm line-clamp-2">
                         {noticia.title || "Sem título"}
                       </h3>
 
-                      {noticia.description && (
-                        <p className="text-gray-400 text-sm">
-                          {noticia.description}
-                        </p>
-                      )}
-
-                      <p className="text-gray-500 text-xs">
-                        {noticia.publishedAt
-                          ? new Date(noticia.publishedAt).toLocaleString(
-                              "pt-BR",
-                            )
-                          : "Data não disponível"}
+                      <p className="text-gray-400 text-xs line-clamp-2">
+                        {noticia.description || "Descrição não disponível."}
                       </p>
 
                       <a
                         href={noticia.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[#00c853] text-sm font-bold hover:underline mt-1"
+                        className="text-[#00c853] text-xs font-bold hover:underline mt-auto"
                       >
                         Ler notícia →
                       </a>
