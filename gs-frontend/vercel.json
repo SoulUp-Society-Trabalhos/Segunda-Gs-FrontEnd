@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://gs-2-entrega-java.onrender.com/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
