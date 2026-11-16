@@ -9,3 +9,18 @@ A plataforma reúne informações sobre a cidade, incluindo mapa interativo, not
 ## 🎯 Objetivo
 
 Utilizar a tecnologia para aproximar os usuários das informações e serviços relacionados à cidade, por meio de uma plataforma digital.
+
+---
+
+## 🛠️ Tecnologias Utilizadas
+
+As seguintes tecnologias foram utilizadas no desenvolvimento:
+
+- HTML5
+- CSS3
+- JavaScript
+- TypeScript
+- React
+- Tailwind CSS
+- Vite
+- Git e GitHub
