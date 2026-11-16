@@ -93,3 +93,14 @@ gs-frontend/
 
 ---
 
+## 👾 Repositório Público
+
+[https://github.com/Brenoell/front-end-1-Challenge](https://github.com/Brenoell/front-end-1-Challenge)
+
+## 📞 Contatos
+
+- Breno: [brenobell03@gmail.com](mailto:brenobell03@gmail.com)
+- Christian: [Chrisvbarbuto@gmail.com](mailto:Chrisvbarbuto@gmail.com)
+- Eduardo Pizzoli: [edupizzolijr@gmail.com](mailto:edupizzolijr@gmail.com)
+- Gustavo: [gulizpon@gmail.com](mailto:gulizpon@gmail.com)
+
