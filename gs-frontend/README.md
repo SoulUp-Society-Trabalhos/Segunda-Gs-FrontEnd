@@ -1,75 +1,106 @@
-# React + TypeScript + Vite
+# 🏙️ Mini City
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📌 Descrição do Projeto
 
-Currently, two official plugins are available:
+O **Mini City** é um projeto desenvolvido pela turma 1TDSPJ, com o objetivo de apresentar uma experiência digital voltada à cidade de São Paulo.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+A plataforma reúne informações sobre a cidade, incluindo mapa interativo, notícias e funcionalidades para os usuários.
 
-## React Compiler
+## 🎯 Objetivo
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Utilizar a tecnologia para aproximar os usuários das informações e serviços relacionados à cidade, por meio de uma plataforma digital.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ Tecnologias Utilizadas
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+As seguintes tecnologias foram utilizadas no desenvolvimento:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- HTML5
+- CSS3
+- JavaScript
+- TypeScript
+- React
+- Tailwind CSS
+- Vite
+- Git e GitHub
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
 
-```
+## 💻 Como executar o projeto
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+1. Clone o repositório:
+git clone https://github.com/Brenoell/front-end-1-Challenge.git
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+2. Acesse a pasta:
+cd front-end-1-Challenge
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+3. Instale as dependências:
+npm install
 
-```
+4. Execute o projeto:
+npm run dev
+
+---
+
+## 🌲 Organização de pastas
+
+gs-frontend/
+├── public/
+│   ├── geojson/
+│   └── integrantes/
+├── src/
+│   ├── assets/
+│   ├── components/
+│   ├── routes/
+│   ├── service/
+│   ├── styles/
+│   ├── types/
+│   ├── App.tsx
+│   └── main.tsx
+├── index.html
+├── package.json
+└── README.md
+
+---
+
+## 👨‍🎓 Autores e Créditos
+### Integrantes do Grupo — Turma 1TDSPJ
+
+### Breno Elisio Leal Lobato — RM569961
+
+- GitHub: [Brenoell](https://github.com/Brenoell)
+- LinkedIn: [Perfil](https://www.linkedin.com/in/breno-elisio-2b123a405/)
+
+### Chrisitian Verzellesi Barbuto — RM568677
+
+- GitHub: [ChrisVerBarbuto](https://github.com/ChrisVerBarbuto)
+- LinkedIn: [Perfil](https://www.linkedin.com/in/christian-verzellesi-barbuto-938463382/)
+
+### Eduardo Pizzoli Junior — RM569529
+
+- GitHub: [dudupizzoli](https://github.com/dudupizzoli)
+
+### Eduardo Nery Kurahara — RM570916
+
+- GitHub: [edu64123](https://github.com/edu64123)
+- LinkedIn: [Perfil](https://www.linkedin.com/in/eduardo-kurahara-786b003b9/)
+
+### Gustavo Lizier Pontes — RM573234
+
+- GitHub: [gustavopontes1104](https://github.com/gustavopontes1104)
+- LinkedIn: [Perfil](https://www.linkedin.com/in/gustavo-pontes-07aa6a3b3/)
+
+---
+
+## 👾 Repositório Público
+
+[https://github.com/Brenoell/front-end-1-Challenge](https://github.com/Brenoell/front-end-1-Challenge)
+
+## 📞 Contatos
+
+- Breno: [brenobell03@gmail.com](mailto:brenobell03@gmail.com)
+- Christian: [Chrisvbarbuto@gmail.com](mailto:Chrisvbarbuto@gmail.com)
+- Eduardo Pizzoli: [edupizzolijr@gmail.com](mailto:edupizzolijr@gmail.com)
+- Gustavo: [gulizpon@gmail.com](mailto:gulizpon@gmail.com)
+

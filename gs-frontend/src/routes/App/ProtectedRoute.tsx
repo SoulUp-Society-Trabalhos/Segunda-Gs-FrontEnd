@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router";
-import { api } from "../../service/api";
+import { verificarSessao } from "../../service/AuthService";
 
 export default function ProtectedRoute() {
   const [autenticado, setAutenticado] = useState<boolean | null>(null);
 
   useEffect(() => {
-    api("/auth/sessao")
+    verificarSessao()
       .then(() => setAutenticado(true))
       .catch(() => setAutenticado(false));
   }, []);
