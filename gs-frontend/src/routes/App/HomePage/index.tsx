@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
-import { api } from "../../../service/api";
+
+import { buscarPessoaLogada } from "../../../service/UsuarioService";
+import { buscarNoticias } from "../../../service/NoticiaService";
 
 import type { DadosPessoa } from "../../../types/Pessoa";
-import type { Noticia, RespostaNoticias } from "../../../types/Noticia";
+import type { Noticia } from "../../../types/Noticia";
+import type { DadosGeoJSON } from "../../../types/Mapa";
 
 import {
   MapContainer,
@@ -14,17 +17,6 @@ import {
 
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-
-// TYPE DO MAPA
-type DadosGeoJSON = {
-  type: string;
-  features: {
-    geometry: {
-      type: string;
-      coordinates: any;
-    };
-  }[];
-};
 
 // Retângulo gigante cobrindo o mundo
 const MUNDO: [number, number][] = [
@@ -85,7 +77,7 @@ export default function HomePage() {
   const [dadosMapa, setDadosMapa] = useState<DadosGeoJSON | null>(null);
   const [erro, setErro] = useState("");
 
-  // ESTADOS DAS NOTÍCIAS
+  // Estados das notícias
   const [abaAtiva, setAbaAtiva] = useState<"perfil" | "noticias">("perfil");
   const [noticias, setNoticias] = useState<Noticia[]>([]);
   const [carregandoNoticias, setCarregandoNoticias] = useState(false);
@@ -105,26 +97,24 @@ export default function HomePage() {
       });
   }, []);
 
-  // Usuário logado
+  // Usuário logado: busca pelo UsuarioService
   useEffect(() => {
-    api("/auth/sessao")
-      .then((r) => r.json())
-      .then((id) => api(`/pessoas/${id}`))
-      .then((r) => r.json())
+    buscarPessoaLogada()
       .then(setPessoa)
-      .catch((e) => console.error("Erro ao carregar usuário:", e));
+      .catch((e) => {
+        console.error("Erro ao carregar usuário:", e);
+      });
   }, []);
 
-  // Buscar notícias no backend
+  // Buscar notícias pelo NoticiaService
   async function carregarNoticias() {
     try {
       setCarregandoNoticias(true);
       setErroNoticias("");
 
-      const resposta = await api("/noticias/sao-paulo");
-      const dados: RespostaNoticias = await resposta.json();
+      const dados = await buscarNoticias();
 
-      setNoticias(dados.articles || []);
+      setNoticias(dados);
     } catch (e) {
       console.error("Erro ao carregar notícias:", e);
       setErroNoticias("Não foi possível carregar as notícias.");
@@ -147,7 +137,7 @@ export default function HomePage() {
               Explore São Paulo
             </h1>
 
-            <div className="w-full h-[450px] md:h-[600px] relative overflow-hidden rounded-xl">
+            <div className="w-full h-112.5 md:h-150 relative overflow-hidden rounded-xl">
               {dadosMapa ? (
                 <MapContainer
                   center={[-23.5505, -46.6333]}
@@ -262,7 +252,7 @@ export default function HomePage() {
                   </p>
                 )}
 
-              <div className="flex flex-col gap-3 max-h-[520px] overflow-y-auto pr-2">
+              <div className="flex flex-col gap-3 max-h-130 overflow-y-auto pr-2">
                 {noticias.map((noticia, index) => (
                   <article
                     key={`${noticia.url}-${index}`}

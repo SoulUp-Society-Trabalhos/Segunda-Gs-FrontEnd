@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 
+import { fazerLogin as autenticar } from "../../../service/AuthService";
+
+import type { DadosLogin } from "../../../types/Auth";
+
 export default function Login() {
   const navigate = useNavigate();
 
@@ -19,25 +23,12 @@ export default function Login() {
     setCarregando(true);
 
     try {
-      const resposta = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          email: email,
-          senha: senha,
-        }),
-      });
+      const dadosLogin: DadosLogin = {
+        email,
+        senha,
+      };
 
-      const dados = await resposta.json().catch(() => null);
-
-      if (!resposta.ok) {
-        throw new Error(
-          dados?.mensagem || dados?.erro || "E-mail ou senha inválidos.",
-        );
-      }
+      await autenticar(dadosLogin);
 
       // Login realizado com sucesso!
       navigate("/app/home-page");
