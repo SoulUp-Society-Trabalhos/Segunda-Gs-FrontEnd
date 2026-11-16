@@ -24,3 +24,21 @@ As seguintes tecnologias foram utilizadas no desenvolvimento:
 - Tailwind CSS
 - Vite
 - Git e GitHub
+
+---
+
+## 💻 Como executar o projeto
+
+1. Clone o repositório:
+git clone https://github.com/Brenoell/front-end-1-Challenge.git
+
+2. Acesse a pasta:
+cd front-end-1-Challenge
+
+3. Instale as dependências:
+npm install
+
+4. Execute o projeto:
+npm run dev
+
+---
