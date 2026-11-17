@@ -29,6 +29,9 @@ export default function Contatos() {
               <input
                 id="nome"
                 name="nome"
+                type="text"
+                autoComplete="name"
+                required
                 placeholder="Seu nome"
                 className="rounded-lg border border-zinc-600 bg-zinc-900 px-4 py-3 text-white outline-none transition focus:border-[#01c853] focus:ring-2 focus:ring-[#01c853]/30"
               />
@@ -41,6 +44,9 @@ export default function Contatos() {
               <input
                 id="email"
                 name="email"
+                type="email"
+                autoComplete="email"
+                required
                 placeholder="voce@exemplo.com"
                 className="rounded-lg border border-zinc-600 bg-zinc-900 px-4 py-3 text-white outline-none transition focus:border-[#01c853] focus:ring-2 focus:ring-[#01c853]/30"
               />
@@ -54,6 +60,7 @@ export default function Contatos() {
                 id="mensagem"
                 name="mensagem"
                 rows={5}
+                required
                 placeholder="Escreva sua mensagem"
                 className="resize-y rounded-lg border border-zinc-600 bg-zinc-900 px-4 py-3 text-white outline-none transition focus:border-[#01c853] focus:ring-2 focus:ring-[#01c853]/30"
               />
