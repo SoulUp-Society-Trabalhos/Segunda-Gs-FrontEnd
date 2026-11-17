@@ -1,6 +1,15 @@
+import { useState, type FormEvent } from "react";
 import Hero from "../../components/Hero";
 
 export default function Contatos() {
+  const [mensagemEnviada, setMensagemEnviada] = useState(false);
+
+  function enviarMensagem(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    event.currentTarget.reset();
+    setMensagemEnviada(true);
+  }
+
   return (
     <main>
       <Hero
@@ -14,13 +23,13 @@ export default function Contatos() {
             Entre em contato
           </h2>
           <p className="mb-8 text-zinc-300">
-            Preencha o formulário abaixo para enviar uma mensagem à nossa
-            equipe.
+            Preencha os campos abaixo para compartilhar sua mensagem com a
+            equipe MiniCity.
           </p>
 
           <form
-            onSubmit={(event) => event.preventDefault()}
-            className="mt-8 flex flex-col gap-6"
+            onSubmit={enviarMensagem}
+            className="flex flex-col gap-6"
           >
             <div className="flex flex-col gap-2">
               <label htmlFor="nome" className="font-nunito font-semibold">
@@ -72,6 +81,15 @@ export default function Contatos() {
             >
               Enviar mensagem
             </button>
+            {mensagemEnviada && (
+              <p
+                role="status"
+                aria-live="polite"
+                className="text-center font-nunito font-semibold text-[#01c853]"
+              >
+                Mensagem enviada com sucesso!
+              </p>
+            )}
           </form>
         </div>
       </section>
