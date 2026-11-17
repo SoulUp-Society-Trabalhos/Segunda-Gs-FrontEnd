@@ -12,7 +12,7 @@ export default function Footer() {
   ];
   return (
     <footer className="bg-black px-[5%] pb-8 pt-16 font-['Montserrat',sans-serif] text-[#00c852]">
-      <div className="max-w-md">
+      <div className="w-full max-w-md">
         <h3 className="mb-5 text-xl font-semibold sm:text-2xl">Um pouco sobre nós</h3>
 
         <p className="mb-6 text-sm leading-6 opacity-80 sm:text-base sm:leading-7">
@@ -31,13 +31,13 @@ export default function Footer() {
 
         <form
           onSubmit={(e) => e.preventDefault()}
-          className="flex items-center rounded-full border border-[#00c852]/40 bg-black p-1.5"
+          className="flex w-full min-w-0 items-center rounded-full border border-[#00c852]/40 bg-black p-1.5"
         >
           <input
             type="email"
             placeholder="Insira o E-mail."
             className="
-              w-full bg-transparent px-4 text-sm text-[#00c852]
+              min-w-0 flex-1 bg-transparent px-4 text-sm text-[#00c852]
               placeholder:text-[#00c852]/60
               focus:outline-none
             "
@@ -45,7 +45,7 @@ export default function Footer() {
           <button
             type="submit"
             className="
-              rounded-full bg-[#00c852] px-6 py-2.5 text-sm font-bold text-black
+              shrink-0 rounded-full bg-[#00c852] px-4 py-2.5 text-sm font-bold text-black sm:px-6
               transition hover:brightness-110 font-nunito
             "
           >
@@ -57,7 +57,7 @@ export default function Footer() {
       
       <div className="mt-16 border-t border-[#00c852]/40 pt-6">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
-          <nav className="flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium sm:text-base">
+          <nav className="flex flex-wrap gap-x-4 gap-y-3 text-sm font-medium sm:gap-x-6 sm:text-base">
             {links.map((link) => (
               <a
                 key={link.label}
@@ -69,7 +69,7 @@ export default function Footer() {
             ))}
           </nav>
 
-          <p className="max-w-full text-xs leading-5 sm:text-sm lg:max-w-sm lg:text-right">
+          <p className="w-full max-w-full text-xs leading-5 sm:text-sm lg:max-w-sm lg:text-right">
             Breno Lobato, Gustavo Pontes, Christian Barbuto, Eduardo Pizzoli,
             Eduardo Nery
           </p>
