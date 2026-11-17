@@ -5,7 +5,7 @@ export default function Cabecalho() {
   const [dropdownAberto, setDropdownAberto] = useState(false);
 
   return (
-    <header className="sticky top-0 z-10 grid grid-cols-[1fr_auto] items-center gap-y-4 bg-black px-4 py-4 font-[IBM_Plex_Mono] sm:px-6 min-[1200px]:grid-cols-[1fr_auto_1fr] min-[1200px]:gap-y-0 min-[1200px]:px-11 min-[1200px]:py-5.5">
+    <header className="sticky top-0 z-1001 grid grid-cols-[1fr_auto] items-center gap-y-4 bg-black px-4 py-4 font-[IBM_Plex_Mono] sm:px-6 min-[1200px]:grid-cols-[1fr_auto_1fr] min-[1200px]:gap-y-0 min-[1200px]:px-11 min-[1200px]:py-5.5">
       <nav className="col-span-2 row-start-2 flex flex-wrap justify-center gap-x-5 gap-y-3 text-xs uppercase text-white min-[1200px]:col-span-1 min-[1200px]:col-start-1 min-[1200px]:row-start-auto min-[1200px]:flex-nowrap min-[1200px]:justify-start min-[1200px]:gap-10">
         <Link to="/" className="text-base font-nunito font-medium">
           Home
