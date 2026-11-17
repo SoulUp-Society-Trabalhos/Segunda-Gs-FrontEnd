@@ -5,8 +5,8 @@ export default function Cabecalho() {
   const [dropdownAberto, setDropdownAberto] = useState(false);
 
   return (
-    <header className="sticky top-0 z-10 grid grid-cols-[1fr_auto_1fr] items-center bg-black px-11 py-5.5 font-[IBM_Plex_Mono]">
-      <nav className="flex gap-10 text-xs uppercase text-white">
+    <header className="sticky top-0 z-10 grid grid-cols-[1fr_auto] items-center gap-y-4 bg-black px-4 py-4 font-[IBM_Plex_Mono] sm:px-6 min-[1200px]:grid-cols-[1fr_auto_1fr] min-[1200px]:gap-y-0 min-[1200px]:px-11 min-[1200px]:py-5.5">
+      <nav className="col-span-2 row-start-2 flex flex-wrap justify-center gap-x-5 gap-y-3 text-xs uppercase text-white min-[1200px]:col-span-1 min-[1200px]:col-start-1 min-[1200px]:row-start-auto min-[1200px]:flex-nowrap min-[1200px]:justify-start min-[1200px]:gap-10">
         <Link to="/" className="text-base font-nunito font-medium">
           Home
         </Link>
@@ -65,7 +65,11 @@ export default function Cabecalho() {
         </Link>
       </nav>
 
-      <Link to="/" aria-label="Início">
+      <Link
+        to="/"
+        aria-label="Início"
+        className="col-start-1 row-start-1 min-[1200px]:col-start-2 min-[1200px]:row-start-auto"
+        >
         <svg
           viewBox="0 0 58 34"
           fill="none"
@@ -84,7 +88,7 @@ export default function Cabecalho() {
 
       <Link
         to="/contatos"
-        className="font-nunito justify-self-end rounded-full bg-[#00C853] px-3 py-2.25 text-base uppercase text-black transition hover:bg-[#10B981]"
+        className="col-start-2 row-start-1 justify-self-end rounded-full bg-[#00C853] px-3 py-2 text-sm font-nunito uppercase text-black transition hover:bg-[#10B981] min-[1200px]:col-start-3 min-[1200px]:row-start-auto min-[1200px]:py-2.25 min-[1200px]:text-base"
       >
         CONTATE-NOS
       </Link>
