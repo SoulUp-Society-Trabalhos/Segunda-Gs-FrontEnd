@@ -1,20 +1,81 @@
+
 import { Link } from "react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function Cabecalho() {
   const [dropdownAberto, setDropdownAberto] = useState(false);
+  const [menuAberto, setMenuAberto] = useState(false);
+
+  const menuRef = useRef<HTMLElement>(null);
+  const botaoMenuRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!menuAberto) return;
+
+    function verificarCliqueFora(event: PointerEvent) {
+      const alvo = event.target as Node;
+
+      if (
+        !menuRef.current?.contains(alvo) &&
+        !botaoMenuRef.current?.contains(alvo)
+      ) {
+        setMenuAberto(false);
+        setDropdownAberto(false);
+      }
+    }
+
+    function verificarTecla(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setMenuAberto(false);
+        setDropdownAberto(false);
+      }
+    }
+
+    function verificarRedimensionamento() {
+      if (window.innerWidth >= 1200) {
+        setMenuAberto(false);
+        setDropdownAberto(false);
+      }
+    }
+
+    document.addEventListener("pointerdown", verificarCliqueFora);
+    document.addEventListener("keydown", verificarTecla);
+    window.addEventListener("resize", verificarRedimensionamento);
+
+    return () => {
+      document.removeEventListener("pointerdown", verificarCliqueFora);
+      document.removeEventListener("keydown", verificarTecla);
+      window.removeEventListener("resize", verificarRedimensionamento);
+    };
+  }, [menuAberto]);
+
+  function fecharMenu() {
+    setMenuAberto(false);
+    setDropdownAberto(false);
+  }
 
   return (
-    <header className="sticky top-0 z-1001 grid grid-cols-[1fr_auto] items-center gap-y-4 bg-black px-4 py-4 font-[IBM_Plex_Mono] sm:px-6 min-[1200px]:grid-cols-[1fr_auto_1fr] min-[1200px]:gap-y-0 min-[1200px]:px-11 min-[1200px]:py-5.5">
-      <nav className="col-span-2 row-start-2 flex flex-wrap justify-center gap-x-5 gap-y-3 text-xs uppercase text-white min-[1200px]:col-span-1 min-[1200px]:col-start-1 min-[1200px]:row-start-auto min-[1200px]:flex-nowrap min-[1200px]:justify-start min-[1200px]:gap-10">
-        <Link to="/" className="text-base font-nunito font-medium">
+    <header className="sticky top-0 z-1001 grid grid-cols-[1fr_auto_auto] items-center gap-y-4 bg-black px-4 py-4 font-[IBM_Plex_Mono] sm:px-6 min-[1200px]:grid-cols-[1fr_auto_1fr] min-[1200px]:gap-y-0 min-[1200px]:px-11 min-[1200px]:py-5.5">
+
+      <nav
+        ref={menuRef}
+        id="menu-principal"
+        className={`${menuAberto ? "flex" : "hidden"} col-span-3 row-start-2 flex-col items-center gap-5 bg-[#181818] py-4 text-xs uppercase text-white min-[1200px]:col-span-1 min-[1200px]:col-start-1 min-[1200px]:row-start-auto min-[1200px]:flex min-[1200px]:flex-row min-[1200px]:flex-nowrap min-[1200px]:justify-start min-[1200px]:gap-10`}
+      >
+        <Link
+          to="/"
+          onClick={fecharMenu}
+          className="block w-full py-2 text-center text-base font-nunito font-medium min-[1200px]:w-auto min-[1200px]:py-0"
+        >
           Home
         </Link>
 
-        <li className="relative list-none font-nunito font-medium">
+        <li className="relative w-full list-none text-center font-nunito font-medium min-[1200px]:w-auto">
           <button
+            type="button"
             onClick={() => setDropdownAberto(!dropdownAberto)}
-            className="flex items-center gap-2 cursor-pointer font-nunito font-medium text-base"
+            aria-expanded={dropdownAberto}
+            className="flex w-full cursor-pointer items-center justify-center gap-2 py-2 font-nunito text-base font-medium min-[1200px]:w-auto min-[1200px]:py-0"
           >
             PROPOSTAS
             <span
@@ -27,12 +88,12 @@ export default function Cabecalho() {
           </button>
 
           {dropdownAberto && (
-            <ul className="absolute left-0 top-full mt-2 w-44 bg-black border border-[#01c853] rounded-lg shadow-lg overflow-hidden z-50">
+            <ul className="absolute left-0 top-full z-50 mt-2 w-full overflow-hidden rounded-lg border border-[#01c853] bg-black shadow-lg min-[1200px]:w-44">
               <li>
                 <Link
                   to="/proposta/"
-                  onClick={() => setDropdownAberto(false)}
-                  className="block px-4 py-3 text-white hover:bg-[#01c853] hover:text-black transition-colors font-nunito font-medium"
+                  onClick={fecharMenu}
+                  className="block w-full px-4 py-3 text-center font-nunito font-medium text-white transition-colors hover:bg-[#01c853] hover:text-black"
                 >
                   Proposta 1
                 </Link>
@@ -41,8 +102,8 @@ export default function Cabecalho() {
               <li>
                 <Link
                   to="/proposta2/"
-                  onClick={() => setDropdownAberto(false)}
-                  className="block px-4 py-3 text-white hover:bg-[#01c853] hover:text-black transition-colors font-nunito font-medium"
+                  onClick={fecharMenu}
+                  className="block w-full px-4 py-3 text-center font-nunito font-medium text-white transition-colors hover:bg-[#01c853] hover:text-black"
                 >
                   Proposta 2
                 </Link>
@@ -51,16 +112,35 @@ export default function Cabecalho() {
           )}
         </li>
 
-        <Link to="/integrantes" className="text-base font-nunito font-medium">
+        <Link
+          to="/integrantes"
+          onClick={fecharMenu}
+          className="block w-full py-2 text-center text-base font-nunito font-medium min-[1200px]:w-auto min-[1200px]:py-0"
+        >
           Integrantes
         </Link>
-        <Link to="/faq" className=" text-base font-nunito font-medium">
+
+        <Link
+          to="/faq"
+          onClick={fecharMenu}
+          className="block w-full py-2 text-center text-base font-nunito font-medium min-[1200px]:w-auto min-[1200px]:py-0"
+        >
           Faq
         </Link>
-        <Link to="/sobre" className="text-base font-nunito font-medium">
+
+        <Link
+          to="/sobre"
+          onClick={fecharMenu}
+          className="block w-full py-2 text-center text-base font-nunito font-medium min-[1200px]:w-auto min-[1200px]:py-0"
+        >
           Sobre
         </Link>
-        <Link to="/app/authpage" className="text-base font-nunito font-medium">
+
+        <Link
+          to="/app/authpage"
+          onClick={fecharMenu}
+          className="block w-full py-2 text-center text-base font-nunito font-medium min-[1200px]:w-auto min-[1200px]:py-0"
+        >
           PROTOTIPO
         </Link>
       </nav>
@@ -68,8 +148,8 @@ export default function Cabecalho() {
       <Link
         to="/"
         aria-label="Início"
-        className="col-start-1 row-start-1 min-[1200px]:col-start-2 min-[1200px]:row-start-auto"
-        >
+        className="hidden min-[1200px]:block min-[1200px]:col-start-2 min-[1200px]:row-start-auto"
+      >
         <svg
           viewBox="0 0 58 34"
           fill="none"
@@ -86,9 +166,26 @@ export default function Cabecalho() {
         </svg>
       </Link>
 
+      <button
+        ref={botaoMenuRef}
+        type="button"
+        aria-label={menuAberto ? "Fechar menu" : "Abrir menu"}
+        aria-expanded={menuAberto}
+        aria-controls="menu-principal"
+        onClick={() => {
+          setMenuAberto(!menuAberto);
+          setDropdownAberto(false);
+        }}
+        className="col-start-1 row-start-1 flex flex-col gap-1.5 p-2 text-[#01c853] min-[1200px]:hidden"
+      >
+        <span className="h-0.5 w-7 rounded bg-current" />
+        <span className="h-0.5 w-7 rounded bg-current" />
+        <span className="h-0.5 w-7 rounded bg-current" />
+      </button>
+
       <Link
         to="/contatos"
-        className="col-start-2 row-start-1 justify-self-end rounded-full bg-[#00C853] px-3 py-2 text-sm font-nunito uppercase text-black transition hover:bg-[#10B981] min-[1200px]:col-start-3 min-[1200px]:row-start-auto min-[1200px]:py-2.25 min-[1200px]:text-base"
+        className="col-start-3 row-start-1 justify-self-end rounded-full bg-[#00C853] px-3 py-2 text-sm font-nunito uppercase text-black transition hover:bg-[#10B981] min-[1200px]:col-start-3 min-[1200px]:row-start-auto min-[1200px]:py-2.25 min-[1200px]:text-base"
       >
         CONTATE-NOS
       </Link>
