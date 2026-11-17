@@ -28,33 +28,7 @@ export default function Footer() {
           <MdEmail />
           <span>minicity@gmail.com</span>
         </div>
-
-        <form
-          onSubmit={(e) => e.preventDefault()}
-          className="flex w-full min-w-0 items-center rounded-full border border-[#00c852]/40 bg-black p-1.5"
-        >
-          <input
-            type="email"
-            placeholder="Insira o E-mail."
-            className="
-              min-w-0 flex-1 bg-transparent px-4 text-sm text-[#00c852]
-              placeholder:text-[#00c852]/60
-              focus:outline-none
-            "
-          />
-          <button
-            type="submit"
-            className="
-              shrink-0 rounded-full bg-[#00c852] px-4 py-2.5 text-sm font-bold text-black sm:px-6
-              transition hover:brightness-110 font-nunito
-            "
-          >
-            Enviar
-          </button>
-        </form>
       </div>
-
-      
       <div className="mt-16 border-t border-[#00c852]/40 pt-6">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
           <nav className="flex flex-wrap gap-x-4 gap-y-3 text-sm font-medium sm:gap-x-6 sm:text-base">
