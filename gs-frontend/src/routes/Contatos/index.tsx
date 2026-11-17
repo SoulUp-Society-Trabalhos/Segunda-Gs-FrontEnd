@@ -17,6 +17,33 @@ export default function Contatos() {
             Preencha o formulário abaixo para enviar uma mensagem à nossa
             equipe.
           </p>
+
+          <form
+            onSubmit={(event) => event.preventDefault()}
+            className="mt-8 flex flex-col gap-6"
+          >
+            <div className="flex flex-col gap-2">
+              <label htmlFor="nome">Nome</label>
+              <input id="nome" name="nome" placeholder="Seu nome" />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="email">E-mail</label>
+              <input id="email" name="email" placeholder="voce@exemplo.com" />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label htmlFor="mensagem">Mensagem</label>
+              <textarea
+                id="mensagem"
+                name="mensagem"
+                rows={5}
+                placeholder="Escreva sua mensagem"
+              />
+            </div>
+
+            <button type="submit">Enviar mensagem</button>
+          </form>
         </div>
       </section>
     </main>
