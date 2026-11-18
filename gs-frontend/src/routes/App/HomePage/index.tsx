@@ -1,3 +1,4 @@
+
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -30,10 +31,20 @@ import {
 } from "react-leaflet";
 
 import L from "leaflet";
+import type { LatLngTuple } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
+// Dados adicionais retornados pelo backend para identificar
+// quem cadastrou cada ocorrência.
+type OcorrenciaComProprietario = OcorrenciaCriada & {
+  origem?: string;
+  pessoa?: {
+    id: number;
+  } | null;
+};
+
 // Retângulo gigante cobrindo o mundo
-const MUNDO: [number, number][] = [
+const MUNDO: LatLngTuple[] = [
   [-85, -540],
   [-85, 540],
   [85, 540],
@@ -59,20 +70,39 @@ function CapturarCliqueMapa({
 function MapaSP({ dados }: { dados: DadosGeoJSON }) {
   const mapa = useMap();
 
-  const furos = useMemo(
-    () =>
-      dados.features.flatMap(({ geometry: g }) =>
-        (g.type === "Polygon" ? [g.coordinates] : g.coordinates)
-          .flat()
-          .map((anel: number[][]) =>
-            anel.map(([lng, lat]) => [lat, lng] as [number, number]),
+  // Transformar as coordenadas do GeoJSON para o formato do Leaflet.
+  // O GeoJSON utiliza [longitude, latitude].
+  // O Leaflet utiliza [latitude, longitude].
+  const furos = useMemo(() => {
+    return dados.features.flatMap((feature) => {
+      const geometria = feature.geometry;
+
+      if (geometria.type === "Polygon") {
+        return geometria.coordinates.map((anel) =>
+          anel.map(
+            ([longitude, latitude]) =>
+              [latitude, longitude] as LatLngTuple,
           ),
-      ),
-    [dados],
-  );
+        );
+      }
+
+      return geometria.coordinates.flatMap((poligono) =>
+        poligono.map((anel) =>
+          anel.map(
+            ([longitude, latitude]) =>
+              [latitude, longitude] as LatLngTuple,
+          ),
+        ),
+      );
+    });
+  }, [dados]);
 
   useEffect(() => {
-    const limites = L.geoJSON(dados as any).getBounds();
+    const limites = L.geoJSON(dados).getBounds();
+
+    if (!limites.isValid()) {
+      return;
+    }
 
     mapa
       .fitBounds(limites, { padding: [30, 30] })
@@ -93,8 +123,12 @@ function MapaSP({ dados }: { dados: DadosGeoJSON }) {
       />
 
       <GeoJSON
-        data={dados as any}
-        style={{ color: "#00c853", weight: 2, fillOpacity: 0 }}
+        data={dados}
+        style={{
+          color: "#00c853",
+          weight: 2,
+          fillOpacity: 0,
+        }}
         interactive={false}
       />
     </>
@@ -102,23 +136,29 @@ function MapaSP({ dados }: { dados: DadosGeoJSON }) {
 }
 
 export default function HomePage() {
+  const navigate = useNavigate();
+
+  // Pessoa logada
   const [pessoa, setPessoa] = useState<DadosPessoa | null>(null);
+
+  // Dados do mapa
   const [dadosMapa, setDadosMapa] = useState<DadosGeoJSON | null>(null);
   const [erro, setErro] = useState("");
 
-  const navigate = useNavigate();
-
+  // Logout
   const [saindo, setSaindo] = useState(false);
   const [erroLogout, setErroLogout] = useState("");
 
-  // Estados das notícias
+  // Notícias
   const [abaAtiva, setAbaAtiva] = useState<"perfil" | "noticias">("perfil");
   const [noticias, setNoticias] = useState<Noticia[]>([]);
-  const [carregandoNoticias, setCarregandoNoticias] = useState(false);
+  const [carregandoNoticias, setCarregandoNoticias] = useState(true);
   const [erroNoticias, setErroNoticias] = useState("");
 
-  // Ocorrências cadastradas no banco de dados
-  const [ocorrencias, setOcorrencias] = useState<OcorrenciaCriada[]>([]);
+  // Ocorrências
+  const [ocorrencias, setOcorrencias] = useState<
+    OcorrenciaComProprietario[]
+  >([]);
 
   // Localização selecionada no mapa
   const [localizacaoSelecionada, setLocalizacaoSelecionada] = useState<{
@@ -126,7 +166,7 @@ export default function HomePage() {
     longitude: number;
   } | null>(null);
 
-  // Estados do formulário de ocorrência
+  // Formulário de ocorrência
   const [formularioAberto, setFormularioAberto] = useState(false);
   const [carregandoOpcoes, setCarregandoOpcoes] = useState(false);
   const [erroFormulario, setErroFormulario] = useState("");
@@ -136,20 +176,38 @@ export default function HomePage() {
 
   // Carregar mapa
   useEffect(() => {
+    let ativo = true;
+
     fetch("/geojson/municipio-sao-paulo-4326.geojson")
-      .then((r) => {
-        if (!r.ok) throw new Error(`Erro ${r.status}`);
-        return r.json();
+      .then((resposta) => {
+        if (!resposta.ok) {
+          throw new Error(`Erro ${resposta.status}`);
+        }
+
+        return resposta.json() as Promise<DadosGeoJSON>;
       })
-      .then(setDadosMapa)
-      .catch((e) => {
-        console.error("Erro ao carregar o mapa:", e);
-        setErro("Não foi possível carregar o mapa.");
+      .then((dados) => {
+        if (ativo) {
+          setDadosMapa(dados);
+        }
+      })
+      .catch((erroMapa: unknown) => {
+        console.error("Erro ao carregar o mapa:", erroMapa);
+
+        if (ativo) {
+          setErro("Não foi possível carregar o mapa.");
+        }
       });
+
+    return () => {
+      ativo = false;
+    };
   }, []);
 
-  // BUSCAR TODAS AS OCORRÊNCIAS DO BANCO DE DADOS
+  // Buscar todas as ocorrências do banco de dados
   useEffect(() => {
+    let ativo = true;
+
     async function carregarOcorrencias() {
       try {
         const resposta = await fetch("/api/ocorrencias", {
@@ -160,27 +218,71 @@ export default function HomePage() {
           throw new Error("Não foi possível buscar as ocorrências.");
         }
 
-        const dados: OcorrenciaCriada[] = await resposta.json();
+        const dados: OcorrenciaComProprietario[] = await resposta.json();
 
-        setOcorrencias(dados);
-      } catch (e) {
-        console.error("Erro ao carregar ocorrências:", e);
+        if (ativo) {
+          setOcorrencias(dados);
+        }
+      } catch (erroOcorrencias) {
+        console.error("Erro ao carregar ocorrências:", erroOcorrencias);
       }
     }
 
     carregarOcorrencias();
+
+    return () => {
+      ativo = false;
+    };
   }, []);
 
-  // Usuário logado
+  // Buscar pessoa logada
   useEffect(() => {
+    let ativo = true;
+
     buscarPessoaLogada()
-      .then(setPessoa)
-      .catch((e) => {
-        console.error("Erro ao carregar usuário:", e);
+      .then((dados) => {
+        if (ativo) {
+          setPessoa(dados);
+        }
+      })
+      .catch((erroPessoa) => {
+        console.error("Erro ao carregar usuário:", erroPessoa);
       });
+
+    return () => {
+      ativo = false;
+    };
   }, []);
 
-  // Buscar notícias
+  // Buscar notícias ao abrir a página
+  useEffect(() => {
+    let ativo = true;
+
+    buscarNoticias()
+      .then((dados) => {
+        if (ativo) {
+          setNoticias(dados);
+        }
+      })
+      .catch((erroBusca) => {
+        console.error("Erro ao carregar notícias:", erroBusca);
+
+        if (ativo) {
+          setErroNoticias("Não foi possível carregar as notícias.");
+        }
+      })
+      .finally(() => {
+        if (ativo) {
+          setCarregandoNoticias(false);
+        }
+      });
+
+    return () => {
+      ativo = false;
+    };
+  }, []);
+
+  // Atualizar notícias pelo botão
   async function carregarNoticias() {
     try {
       setCarregandoNoticias(true);
@@ -189,17 +291,13 @@ export default function HomePage() {
       const dados = await buscarNoticias();
 
       setNoticias(dados);
-    } catch (e) {
-      console.error("Erro ao carregar notícias:", e);
+    } catch (erroBusca) {
+      console.error("Erro ao carregar notícias:", erroBusca);
       setErroNoticias("Não foi possível carregar as notícias.");
     } finally {
       setCarregandoNoticias(false);
     }
   }
-
-  useEffect(() => {
-    carregarNoticias();
-  }, []);
 
   // Abrir formulário e carregar distritos e categorias
   async function abrirFormulario() {
@@ -235,8 +333,9 @@ export default function HomePage() {
       setCategorias(categoriasFormatadas);
 
       setFormularioAberto(true);
-    } catch (e) {
-      console.error("Erro ao carregar opções:", e);
+    } catch (erroBusca) {
+      console.error("Erro ao carregar opções:", erroBusca);
+
       setErroFormulario(
         "Não foi possível carregar os distritos e as categorias.",
       );
@@ -247,7 +346,14 @@ export default function HomePage() {
 
   // Adicionar ocorrência recém-cadastrada ao mapa
   function adicionarOcorrencia(ocorrencia: OcorrenciaCriada) {
-    setOcorrencias((anteriores) => [...anteriores, ocorrencia]);
+    setOcorrencias((anteriores) => [
+      ...anteriores,
+      {
+        ...ocorrencia,
+        origem: "CIDADAO",
+        pessoa: pessoa?.id ? { id: pessoa.id } : null,
+      },
+    ]);
 
     setFormularioAberto(false);
     setLocalizacaoSelecionada(null);
@@ -269,8 +375,9 @@ export default function HomePage() {
       }
 
       navigate("/app/login", { replace: true });
-    } catch (erro) {
-      console.error("Erro ao sair:", erro);
+    } catch (erroLogout) {
+      console.error("Erro ao sair:", erroLogout);
+
       setErroLogout("Não foi possível encerrar a sessão.");
       setSaindo(false);
     }
@@ -309,38 +416,57 @@ export default function HomePage() {
                   <MapaSP dados={dadosMapa} />
 
                   {/* MARCADORES DE TODAS AS OCORRÊNCIAS */}
-                  {ocorrencias.map((ocorrencia) => (
-                    <Marker
-                      key={ocorrencia.id}
-                      position={[ocorrencia.latitude, ocorrencia.longitude]}
-                    >
-                      <Popup>
-                        <div className="min-w-40">
-                          <h3 className="font-bold text-base mb-2">
-                            {ocorrencia.nomeTitulo}
-                          </h3>
+                  {ocorrencias.map((ocorrencia) => {
+                    const podeEditar =
+                      ocorrencia.origem === "CIDADAO" &&
+                      pessoa?.id != null &&
+                      ocorrencia.pessoa?.id === pessoa.id;
 
-                          <p className="mb-2">{ocorrencia.descOcorrencia}</p>
+                    return (
+                      <Marker
+                        key={ocorrencia.id}
+                        position={[
+                          ocorrencia.latitude,
+                          ocorrencia.longitude,
+                        ]}
+                      >
+                        <Popup>
+                          <div className="min-w-40">
+                            <h3 className="font-bold text-base mb-2">
+                              {ocorrencia.nomeTitulo}
+                            </h3>
 
-                          <p>
-                            <strong>Gravidade:</strong> {ocorrencia.gravidade}/5
-                          </p>
+                            <p className="mb-2">
+                              {ocorrencia.descOcorrencia}
+                            </p>
 
-                          <p>
-                            <strong>Distrito:</strong>{" "}
-                            {ocorrencia.distrito?.nomeDistrito ||
-                              "Não informado"}
-                          </p>
+                            <p>
+                              <strong>Gravidade:</strong>{" "}
+                              {ocorrencia.gravidade}/5
+                            </p>
 
-                          <p>
-                            <strong>Categoria:</strong>{" "}
-                            {ocorrencia.categoria?.nomeOcorrencia ||
-                              "Não informada"}
-                          </p>
-                        </div>
-                      </Popup>
-                    </Marker>
-                  ))}
+                            <p>
+                              <strong>Distrito:</strong>{" "}
+                              {ocorrencia.distrito?.nomeDistrito ||
+                                "Não informado"}
+                            </p>
+
+                            <p>
+                              <strong>Categoria:</strong>{" "}
+                              {ocorrencia.categoria?.nomeOcorrencia ||
+                                "Não informada"}
+                            </p>
+
+                            {podeEditar && (
+                              <p className="mt-3 font-bold text-green-700">
+                                Esta ocorrência foi cadastrada por você.
+                              </p>
+                            )}
+                          </div>
+                        </Popup>
+                      </Marker>
+                    );
+                  })}
 
                   <CapturarCliqueMapa
                     onSelecionar={(latitude, longitude) => {
@@ -412,12 +538,15 @@ export default function HomePage() {
               {saindo ? "Saindo..." : "Sair"}
             </button>
 
-            {erroLogout && <p className="text-red-400 text-sm">{erroLogout}</p>}
+            {erroLogout && (
+              <p className="text-red-400 text-sm">{erroLogout}</p>
+            )}
           </div>
 
           {/* ABAS */}
           <div className="flex w-full border-b border-gray-800">
             <button
+              type="button"
               onClick={() => setAbaAtiva("perfil")}
               className={`flex-1 py-3 font-nunito font-bold transition ${
                 abaAtiva === "perfil"
@@ -429,6 +558,7 @@ export default function HomePage() {
             </button>
 
             <button
+              type="button"
               onClick={() => setAbaAtiva("noticias")}
               className={`flex-1 py-3 font-nunito font-bold transition ${
                 abaAtiva === "noticias"
@@ -478,6 +608,7 @@ export default function HomePage() {
                 </h2>
 
                 <button
+                  type="button"
                   onClick={carregarNoticias}
                   disabled={carregandoNoticias}
                   className="text-[#00c853] text-sm font-bold hover:text-green-400 disabled:opacity-50"
@@ -487,7 +618,9 @@ export default function HomePage() {
               </div>
 
               {carregandoNoticias && (
-                <p className="text-gray-400 text-sm">Carregando notícias...</p>
+                <p className="text-gray-400 text-sm">
+                  Carregando notícias...
+                </p>
               )}
 
               {erroNoticias && (
@@ -553,6 +686,7 @@ export default function HomePage() {
         </aside>
       </div>
 
+      {/* FORMULÁRIO DE CADASTRO */}
       {formularioAberto && localizacaoSelecionada && (
         <div className="fixed inset-0 z-1000 bg-black/80 flex items-center justify-center p-4 overflow-y-auto">
           <div className="w-full max-w-2xl my-auto">

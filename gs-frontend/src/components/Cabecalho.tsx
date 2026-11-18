@@ -60,7 +60,7 @@ export default function Cabecalho() {
       <nav
         ref={menuRef}
         id="menu-principal"
-        className={`${menuAberto ? "flex" : "hidden"} col-span-3 row-start-2 flex-col items-center gap-5 bg-[#181818] py-4 text-xs uppercase text-white min-[1200px]:col-span-1 min-[1200px]:col-start-1 min-[1200px]:row-start-auto min-[1200px]:flex min-[1200px]:flex-row min-[1200px]:flex-nowrap min-[1200px]:justify-start min-[1200px]:gap-10`}
+        className={`${menuAberto ? "flex" : "hidden"} col-span-3 row-start-2 flex-col items-center gap-5 bg-black py-4 text-xs uppercase text-white min-[1200px]:col-span-1 min-[1200px]:col-start-1 min-[1200px]:row-start-auto min-[1200px]:flex min-[1200px]:flex-row min-[1200px]:flex-nowrap min-[1200px]:justify-start min-[1200px]:gap-10`}
       >
         <Link
           to="/"
