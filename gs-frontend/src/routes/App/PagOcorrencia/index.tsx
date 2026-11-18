@@ -37,6 +37,11 @@ export default function PagOcorrencia() {
   }
 
   useEffect(() => {
+    document.title = "Pag. Ocorrencia | MiniCity";
+  }, []);
+
+
+  useEffect(() => {
     async function carregarDados() {
       if (!id || !Number.isInteger(Number(id)) || Number(id) <= 0) {
         setErro("Identificador da ocorrência inválido.");

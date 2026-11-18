@@ -2,8 +2,12 @@ import Hero from "../../components/Hero";
 import ceu2 from "../../assets/imagensPropostas/ceu2.jpg";
 import ceuEntardecer from "../../assets/imagensPropostas/ceuEntardecer.jpg"; 
 import noite2 from "../../assets/imagensPropostas/noite2.jpg"; 
+import {  useEffect } from "react";
 
 export default function Proposta() {
+  useEffect(() => {
+    document.title = "Proposta 1 | MiniCity";
+  }, []);
   return (
     <main>
       <Hero

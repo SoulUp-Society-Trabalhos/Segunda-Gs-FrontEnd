@@ -20,6 +20,7 @@ export default function ModalSucesso({
   }
 
   return (
+    
     <div className="fixed inset-0 z-1000 flex items-center justify-center bg-black/80 px-6">
       <div
         role="dialog"

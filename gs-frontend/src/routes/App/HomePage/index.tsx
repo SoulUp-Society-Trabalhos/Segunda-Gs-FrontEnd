@@ -108,6 +108,11 @@ function MapaSP({ dados }: { dados: DadosGeoJSON }) {
   }, [dados]);
 
   useEffect(() => {
+    document.title = "HomePage | MiniCity";
+  }, []);
+
+
+  useEffect(() => {
     const limites = L.geoJSON(dados).getBounds();
 
     if (!limites.isValid()) {

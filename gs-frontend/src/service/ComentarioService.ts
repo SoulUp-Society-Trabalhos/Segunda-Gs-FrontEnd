@@ -1,5 +1,5 @@
 
-import { api } from "./api";
+import { api } from "./Api";
 
 import type {
   Comentario,

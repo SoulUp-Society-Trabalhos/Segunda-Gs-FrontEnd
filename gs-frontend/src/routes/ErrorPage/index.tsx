@@ -1,6 +1,10 @@
-
+import { useEffect } from "react";
 export default function ErrorPage() {
+  useEffect(() => {
+      document.title = "Erro | MiniCity";
+    }, []);
   return (
+    
     <main>
         <section className="min-h-[90vh] bg-gray-950 flex flex-col items-center justify-center">
         <div className="text-center flex flex-col gap-3">
