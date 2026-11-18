@@ -7,6 +7,7 @@ import { buscarNoticias } from "../../../service/NoticiaService";
 import { buscarDistritos } from "../../../service/DistritoService";
 import { buscarCategorias } from "../../../service/CategoriaOcorrenciaService";
 
+import ModalSucesso from "../../../components/ModalSucesso";
 import FormularioOcorrencia from "../../../components/FormularioOcorrencia";
 import type { OcorrenciaCriada } from "../../../components/FormularioOcorrencia";
 
@@ -34,16 +35,17 @@ import L from "leaflet";
 import type { LatLngTuple } from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-// Dados adicionais retornados pelo backend para identificar
-// quem cadastrou cada ocorrência.
+// Dados adicionais da ocorrência retornados pelo backend.
 type OcorrenciaComProprietario = OcorrenciaCriada & {
   origem?: string;
+  status?: string;
+  dataOcorrencia?: string;
   pessoa?: {
     id: number;
   } | null;
 };
 
-// Retângulo gigante cobrindo o mundo
+// Retângulo cobrindo o mundo.
 const MUNDO: LatLngTuple[] = [
   [-85, -540],
   [-85, 540],
@@ -51,7 +53,7 @@ const MUNDO: LatLngTuple[] = [
   [85, -540],
 ];
 
-// Capturar clique no mapa
+// Capturar clique no mapa.
 function CapturarCliqueMapa({
   onSelecionar,
 }: {
@@ -66,13 +68,10 @@ function CapturarCliqueMapa({
   return null;
 }
 
-// Mapa de São Paulo
+// Mapa de São Paulo.
 function MapaSP({ dados }: { dados: DadosGeoJSON }) {
   const mapa = useMap();
 
-  // Transformar as coordenadas do GeoJSON para o formato do Leaflet.
-  // O GeoJSON utiliza [longitude, latitude].
-  // O Leaflet utiliza [latitude, longitude].
   const furos = useMemo(() => {
     return dados.features.flatMap((feature) => {
       const geometria = feature.geometry;
@@ -80,8 +79,7 @@ function MapaSP({ dados }: { dados: DadosGeoJSON }) {
       if (geometria.type === "Polygon") {
         return geometria.coordinates.map((anel) =>
           anel.map(
-            ([longitude, latitude]) =>
-              [latitude, longitude] as LatLngTuple,
+            ([longitude, latitude]) => [latitude, longitude] as LatLngTuple,
           ),
         );
       }
@@ -89,8 +87,7 @@ function MapaSP({ dados }: { dados: DadosGeoJSON }) {
       return geometria.coordinates.flatMap((poligono) =>
         poligono.map((anel) =>
           anel.map(
-            ([longitude, latitude]) =>
-              [latitude, longitude] as LatLngTuple,
+            ([longitude, latitude]) => [latitude, longitude] as LatLngTuple,
           ),
         ),
       );
@@ -135,38 +132,53 @@ function MapaSP({ dados }: { dados: DadosGeoJSON }) {
   );
 }
 
+type AbaAtiva = "perfil" | "noticias" | "ocorrencias";
+
 export default function HomePage() {
   const navigate = useNavigate();
 
-  // Pessoa logada
   const [pessoa, setPessoa] = useState<DadosPessoa | null>(null);
 
-  // Dados do mapa
   const [dadosMapa, setDadosMapa] = useState<DadosGeoJSON | null>(null);
   const [erro, setErro] = useState("");
 
-  // Logout
   const [saindo, setSaindo] = useState(false);
   const [erroLogout, setErroLogout] = useState("");
 
-  // Notícias
-  const [abaAtiva, setAbaAtiva] = useState<"perfil" | "noticias">("perfil");
+  // Abas do painel.
+  const [abaAtiva, setAbaAtiva] = useState<AbaAtiva>("perfil");
+
+  // Notícias.
   const [noticias, setNoticias] = useState<Noticia[]>([]);
   const [carregandoNoticias, setCarregandoNoticias] = useState(true);
   const [erroNoticias, setErroNoticias] = useState("");
 
-  // Ocorrências
-  const [ocorrencias, setOcorrencias] = useState<
-    OcorrenciaComProprietario[]
-  >([]);
+  // Ocorrências.
+  const [ocorrencias, setOcorrencias] = useState<OcorrenciaComProprietario[]>(
+    [],
+  );
 
-  // Localização selecionada no mapa
+  const [carregandoOcorrencias, setCarregandoOcorrencias] = useState(true);
+  const [erroOcorrencias, setErroOcorrencias] = useState("");
+
+  // Modal de confirmação da exclusão.
+  const [ocorrenciaParaExcluir, setOcorrenciaParaExcluir] = useState<number | null>(
+    null,
+  );
+
+  // Controle da requisição de exclusão.
+  const [excluindo, setExcluindo] = useState(false);
+
+  // Modal de sucesso da exclusão.
+  const [modalExclusaoAberto, setModalExclusaoAberto] = useState(false);
+
+  // Localização selecionada no mapa.
   const [localizacaoSelecionada, setLocalizacaoSelecionada] = useState<{
     latitude: number;
     longitude: number;
   } | null>(null);
 
-  // Formulário de ocorrência
+  // Formulário.
   const [formularioAberto, setFormularioAberto] = useState(false);
   const [carregandoOpcoes, setCarregandoOpcoes] = useState(false);
   const [erroFormulario, setErroFormulario] = useState("");
@@ -174,7 +186,11 @@ export default function HomePage() {
   const [distritos, setDistritos] = useState<OpcaoOcorrencia[]>([]);
   const [categorias, setCategorias] = useState<OpcaoOcorrencia[]>([]);
 
-  // Carregar mapa
+  // Ocorrência selecionada para edição.
+  const [ocorrenciaEmEdicao, setOcorrenciaEmEdicao] =
+    useState<OcorrenciaComProprietario | null>(null);
+
+  // Carregar o mapa.
   useEffect(() => {
     let ativo = true;
 
@@ -204,12 +220,15 @@ export default function HomePage() {
     };
   }, []);
 
-  // Buscar todas as ocorrências do banco de dados
+  // Buscar todas as ocorrências.
   useEffect(() => {
     let ativo = true;
 
     async function carregarOcorrencias() {
       try {
+        setCarregandoOcorrencias(true);
+        setErroOcorrencias("");
+
         const resposta = await fetch("/api/ocorrencias", {
           credentials: "include",
         });
@@ -223,8 +242,16 @@ export default function HomePage() {
         if (ativo) {
           setOcorrencias(dados);
         }
-      } catch (erroOcorrencias) {
-        console.error("Erro ao carregar ocorrências:", erroOcorrencias);
+      } catch (erroBusca) {
+        console.error("Erro ao carregar ocorrências:", erroBusca);
+
+        if (ativo) {
+          setErroOcorrencias("Não foi possível carregar as ocorrências.");
+        }
+      } finally {
+        if (ativo) {
+          setCarregandoOcorrencias(false);
+        }
       }
     }
 
@@ -235,7 +262,7 @@ export default function HomePage() {
     };
   }, []);
 
-  // Buscar pessoa logada
+  // Buscar pessoa logada.
   useEffect(() => {
     let ativo = true;
 
@@ -254,7 +281,7 @@ export default function HomePage() {
     };
   }, []);
 
-  // Buscar notícias ao abrir a página
+  // Buscar notícias.
   useEffect(() => {
     let ativo = true;
 
@@ -282,7 +309,7 @@ export default function HomePage() {
     };
   }, []);
 
-  // Atualizar notícias pelo botão
+  // Atualizar notícias.
   async function carregarNoticias() {
     try {
       setCarregandoNoticias(true);
@@ -299,7 +326,32 @@ export default function HomePage() {
     }
   }
 
-  // Abrir formulário e carregar distritos e categorias
+  // Carregar as opções de distrito e categoria.
+  async function carregarOpcoesFormulario() {
+    const [dadosDistritos, dadosCategorias] = await Promise.all([
+      buscarDistritos(),
+      buscarCategorias(),
+    ]);
+
+    const distritosFormatados: OpcaoOcorrencia[] = (
+      dadosDistritos as Distrito[]
+    ).map((distrito) => ({
+      id: distrito.id,
+      nome: distrito.nomeDistrito,
+    }));
+
+    const categoriasFormatadas: OpcaoOcorrencia[] = (
+      dadosCategorias as CategoriaOcorrencia[]
+    ).map((categoria) => ({
+      id: categoria.id,
+      nome: categoria.nomeOcorrencia,
+    }));
+
+    setDistritos(distritosFormatados);
+    setCategorias(categoriasFormatadas);
+  }
+
+  // Abrir formulário para cadastrar.
   async function abrirFormulario() {
     if (!localizacaoSelecionada) {
       setErroFormulario("Clique primeiro em um ponto do mapa.");
@@ -309,28 +361,9 @@ export default function HomePage() {
     try {
       setCarregandoOpcoes(true);
       setErroFormulario("");
+      setOcorrenciaEmEdicao(null);
 
-      const [dadosDistritos, dadosCategorias] = await Promise.all([
-        buscarDistritos(),
-        buscarCategorias(),
-      ]);
-
-      const distritosFormatados: OpcaoOcorrencia[] = (
-        dadosDistritos as Distrito[]
-      ).map((distrito) => ({
-        id: distrito.id,
-        nome: distrito.nomeDistrito,
-      }));
-
-      const categoriasFormatadas: OpcaoOcorrencia[] = (
-        dadosCategorias as CategoriaOcorrencia[]
-      ).map((categoria) => ({
-        id: categoria.id,
-        nome: categoria.nomeOcorrencia,
-      }));
-
-      setDistritos(distritosFormatados);
-      setCategorias(categoriasFormatadas);
+      await carregarOpcoesFormulario();
 
       setFormularioAberto(true);
     } catch (erroBusca) {
@@ -344,22 +377,139 @@ export default function HomePage() {
     }
   }
 
-  // Adicionar ocorrência recém-cadastrada ao mapa
-  function adicionarOcorrencia(ocorrencia: OcorrenciaCriada) {
-    setOcorrencias((anteriores) => [
-      ...anteriores,
-      {
-        ...ocorrencia,
-        origem: "CIDADAO",
-        pessoa: pessoa?.id ? { id: pessoa.id } : null,
-      },
-    ]);
+  // Abrir formulário para editar.
+  async function abrirEdicao(ocorrencia: OcorrenciaComProprietario) {
+    try {
+      setCarregandoOpcoes(true);
+      setErroOcorrencias("");
 
+      await carregarOpcoesFormulario();
+
+      setLocalizacaoSelecionada(null);
+      setOcorrenciaEmEdicao(ocorrencia);
+      setFormularioAberto(true);
+    } catch (erroBusca) {
+      console.error("Erro ao carregar opções:", erroBusca);
+
+      setErroOcorrencias("Não foi possível abrir a edição da ocorrência.");
+    } finally {
+      setCarregandoOpcoes(false);
+    }
+  }
+
+  // Fechar o formulário.
+  function fecharFormulario() {
     setFormularioAberto(false);
+    setOcorrenciaEmEdicao(null);
     setLocalizacaoSelecionada(null);
   }
 
-  // Fazer logout
+  // Adicionar ou atualizar ocorrência na lista.
+  function salvarNaLista(ocorrencia: OcorrenciaCriada) {
+    if (ocorrenciaEmEdicao) {
+      setOcorrencias((anteriores) =>
+        anteriores.map((item) =>
+          item.id === ocorrencia.id
+            ? {
+                ...item,
+                ...ocorrencia,
+                origem: "CIDADAO",
+                pessoa: item.pessoa,
+              }
+            : item,
+        ),
+      );
+    } else {
+      setOcorrencias((anteriores) => [
+        ...anteriores,
+        {
+          ...ocorrencia,
+          origem: "CIDADAO",
+          pessoa: pessoa?.id ? { id: pessoa.id } : null,
+        },
+      ]);
+    }
+
+    setFormularioAberto(false);
+    setOcorrenciaEmEdicao(null);
+    setLocalizacaoSelecionada(null);
+  }
+
+  // Abrir modal de confirmação da exclusão.
+  function abrirConfirmacaoExclusao(id: number) {
+    setErroOcorrencias("");
+    setOcorrenciaParaExcluir(id);
+  }
+
+  // Cancelar exclusão.
+  function cancelarExclusao() {
+    if (excluindo) {
+      return;
+    }
+
+    setOcorrenciaParaExcluir(null);
+  }
+
+  // Confirmar e excluir a ocorrência.
+  async function confirmarExclusao() {
+    if (ocorrenciaParaExcluir === null) {
+      return;
+    }
+
+    try {
+      setExcluindo(true);
+      setErroOcorrencias("");
+
+      const resposta = await fetch(
+        `/api/ocorrencias/${ocorrenciaParaExcluir}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        },
+      );
+
+      if (!resposta.ok) {
+        const mensagem = await resposta.text();
+
+        throw new Error(mensagem || "Não foi possível excluir a ocorrência.");
+      }
+
+      // Remove a ocorrência da lista e do mapa.
+      setOcorrencias((anteriores) =>
+        anteriores.filter(
+          (ocorrencia) => ocorrencia.id !== ocorrenciaParaExcluir,
+        ),
+      );
+
+      // Fecha o modal de confirmação.
+      setOcorrenciaParaExcluir(null);
+
+      // Abre o modal de sucesso.
+      setModalExclusaoAberto(true);
+    } catch (erroExcluir) {
+      console.error("Erro ao excluir ocorrência:", erroExcluir);
+
+      setErroOcorrencias(
+        erroExcluir instanceof Error
+          ? erroExcluir.message
+          : "Não foi possível excluir a ocorrência.",
+      );
+
+      setOcorrenciaParaExcluir(null);
+    } finally {
+      setExcluindo(false);
+    }
+  }
+
+  // Selecionar somente ocorrências da pessoa logada.
+  const minhasOcorrencias = ocorrencias.filter(
+    (ocorrencia) =>
+      ocorrencia.origem === "CIDADAO" &&
+      pessoa?.id != null &&
+      ocorrencia.pessoa?.id === pessoa.id,
+  );
+
+  // Logout.
   async function fazerLogout() {
     try {
       setSaindo(true);
@@ -416,57 +566,38 @@ export default function HomePage() {
                   <MapaSP dados={dadosMapa} />
 
                   {/* MARCADORES DE TODAS AS OCORRÊNCIAS */}
-                  {ocorrencias.map((ocorrencia) => {
-                    const podeEditar =
-                      ocorrencia.origem === "CIDADAO" &&
-                      pessoa?.id != null &&
-                      ocorrencia.pessoa?.id === pessoa.id;
+                  {ocorrencias.map((ocorrencia) => (
+                    <Marker
+                      key={ocorrencia.id}
+                      position={[ocorrencia.latitude, ocorrencia.longitude]}
+                    >
+                      <Popup>
+                        <div className="min-w-40">
+                          <h3 className="font-bold text-base mb-2">
+                            {ocorrencia.nomeTitulo}
+                          </h3>
 
-                    return (
-                      <Marker
-                        key={ocorrencia.id}
-                        position={[
-                          ocorrencia.latitude,
-                          ocorrencia.longitude,
-                        ]}
-                      >
-                        <Popup>
-                          <div className="min-w-40">
-                            <h3 className="font-bold text-base mb-2">
-                              {ocorrencia.nomeTitulo}
-                            </h3>
+                          <p className="mb-2">{ocorrencia.descOcorrencia}</p>
 
-                            <p className="mb-2">
-                              {ocorrencia.descOcorrencia}
-                            </p>
+                          <p>
+                            <strong>Gravidade:</strong> {ocorrencia.gravidade}/5
+                          </p>
 
-                            <p>
-                              <strong>Gravidade:</strong>{" "}
-                              {ocorrencia.gravidade}/5
-                            </p>
+                          <p>
+                            <strong>Distrito:</strong>{" "}
+                            {ocorrencia.distrito?.nomeDistrito ||
+                              "Não informado"}
+                          </p>
 
-                            <p>
-                              <strong>Distrito:</strong>{" "}
-                              {ocorrencia.distrito?.nomeDistrito ||
-                                "Não informado"}
-                            </p>
-
-                            <p>
-                              <strong>Categoria:</strong>{" "}
-                              {ocorrencia.categoria?.nomeOcorrencia ||
-                                "Não informada"}
-                            </p>
-
-                            {podeEditar && (
-                              <p className="mt-3 font-bold text-green-700">
-                                Esta ocorrência foi cadastrada por você.
-                              </p>
-                            )}
-                          </div>
-                        </Popup>
-                      </Marker>
-                    );
-                  })}
+                          <p>
+                            <strong>Categoria:</strong>{" "}
+                            {ocorrencia.categoria?.nomeOcorrencia ||
+                              "Não informada"}
+                          </p>
+                        </div>
+                      </Popup>
+                    </Marker>
+                  ))}
 
                   <CapturarCliqueMapa
                     onSelecionar={(latitude, longitude) => {
@@ -527,7 +658,7 @@ export default function HomePage() {
 
         {/* PAINEL LATERAL */}
         <aside className="w-full lg:w-80 xl:w-96 flex flex-col gap-5">
-          {/* BOTÃO DE LOGOUT */}
+          {/* LOGOUT */}
           <div className="flex flex-col items-end gap-2">
             <button
               type="button"
@@ -538,9 +669,7 @@ export default function HomePage() {
               {saindo ? "Saindo..." : "Sair"}
             </button>
 
-            {erroLogout && (
-              <p className="text-red-400 text-sm">{erroLogout}</p>
-            )}
+            {erroLogout && <p className="text-red-400 text-sm">{erroLogout}</p>}
           </div>
 
           {/* ABAS */}
@@ -567,6 +696,18 @@ export default function HomePage() {
               }`}
             >
               Notícias
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setAbaAtiva("ocorrencias")}
+              className={`flex-1 py-3 font-nunito font-bold transition ${
+                abaAtiva === "ocorrencias"
+                  ? "text-[#00c853] border-b-2 border-[#00c853]"
+                  : "text-gray-500 hover:text-white"
+              }`}
+            >
+              Minhas ocorrências
             </button>
           </div>
 
@@ -618,9 +759,7 @@ export default function HomePage() {
               </div>
 
               {carregandoNoticias && (
-                <p className="text-gray-400 text-sm">
-                  Carregando notícias...
-                </p>
+                <p className="text-gray-400 text-sm">Carregando notícias...</p>
               )}
 
               {erroNoticias && (
@@ -683,24 +822,182 @@ export default function HomePage() {
               </div>
             </div>
           )}
+
+          {/* ABA MINHAS OCORRÊNCIAS */}
+          {abaAtiva === "ocorrencias" && (
+            <div className="flex flex-col gap-4">
+              <div>
+                <h2 className="text-xl font-bold font-nunito">
+                  Minhas ocorrências
+                </h2>
+
+                <p className="text-gray-400 text-sm mt-1">
+                  Gerencie as ocorrências que você cadastrou.
+                </p>
+              </div>
+
+              {carregandoOcorrencias && (
+                <p className="text-gray-400 text-sm">
+                  Carregando ocorrências...
+                </p>
+              )}
+
+              {erroOcorrencias && (
+                <p className="text-red-400 text-sm">{erroOcorrencias}</p>
+              )}
+
+              {!carregandoOcorrencias && minhasOcorrencias.length === 0 && (
+                <div className="bg-[#151515] border border-gray-800 rounded-xl p-5 text-center">
+                  <p className="text-gray-300 font-bold">
+                    Você ainda não cadastrou ocorrências.
+                  </p>
+
+                  <p className="text-gray-500 text-sm mt-2">
+                    Selecione um local no mapa e registre sua primeira
+                    ocorrência.
+                  </p>
+                </div>
+              )}
+
+              <div className="flex flex-col gap-3 max-h-162.5 overflow-y-auto pr-2">
+                {minhasOcorrencias.map((ocorrencia) => (
+                  <article
+                    key={ocorrencia.id}
+                    className="bg-[#151515] border border-gray-800 rounded-xl p-4 flex flex-col gap-3"
+                  >
+                    <div>
+                      <h3 className="font-nunito font-bold text-white">
+                        {ocorrencia.nomeTitulo}
+                      </h3>
+
+                      <p className="text-gray-400 text-sm mt-2 wrap-break-words">
+                        {ocorrencia.descOcorrencia}
+                      </p>
+                    </div>
+
+                    <div className="text-gray-400 text-xs flex flex-col gap-1">
+                      <p>
+                        <strong className="text-gray-300">Gravidade:</strong>{" "}
+                        {ocorrencia.gravidade}/5
+                      </p>
+
+                      <p>
+                        <strong className="text-gray-300">Distrito:</strong>{" "}
+                        {ocorrencia.distrito?.nomeDistrito || "Não informado"}
+                      </p>
+
+                      <p>
+                        <strong className="text-gray-300">Categoria:</strong>{" "}
+                        {ocorrencia.categoria?.nomeOcorrencia ||
+                          "Não informada"}
+                      </p>
+
+                      <p>
+                        <strong className="text-gray-300">Status:</strong>{" "}
+                        {ocorrencia.status || "Não informado"}
+                      </p>
+                    </div>
+
+                    <div className="flex gap-2 pt-2 border-t border-gray-800">
+                      <button
+                        type="button"
+                        onClick={() => abrirEdicao(ocorrencia)}
+                        disabled={carregandoOpcoes}
+                        className="flex-1 py-2 rounded-lg bg-[#00c853] text-black font-bold text-sm hover:bg-green-400 transition disabled:opacity-50"
+                      >
+                        Editar
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => abrirConfirmacaoExclusao(ocorrencia.id)}
+                        className="flex-1 py-2 rounded-lg border border-red-500 text-red-400 font-bold text-sm hover:bg-red-500 hover:text-white transition"
+                      >
+                        Excluir
+                      </button>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          )}
         </aside>
       </div>
 
-      {/* FORMULÁRIO DE CADASTRO */}
-      {formularioAberto && localizacaoSelecionada && (
+      {/* FORMULÁRIO DE CADASTRO OU EDIÇÃO */}
+      {formularioAberto && (localizacaoSelecionada || ocorrenciaEmEdicao) && (
         <div className="fixed inset-0 z-1000 bg-black/80 flex items-center justify-center p-4 overflow-y-auto">
           <div className="w-full max-w-2xl my-auto">
             <FormularioOcorrencia
-              latitude={localizacaoSelecionada.latitude}
-              longitude={localizacaoSelecionada.longitude}
+              key={ocorrenciaEmEdicao?.id ?? "novo"}
+              latitude={
+                ocorrenciaEmEdicao?.latitude ??
+                localizacaoSelecionada?.latitude ??
+                0
+              }
+              longitude={
+                ocorrenciaEmEdicao?.longitude ??
+                localizacaoSelecionada?.longitude ??
+                0
+              }
               distritos={distritos}
               categorias={categorias}
-              onClose={() => setFormularioAberto(false)}
-              onSucesso={adicionarOcorrencia}
+              ocorrenciaEdicao={ocorrenciaEmEdicao}
+              onClose={fecharFormulario}
+              onSucesso={salvarNaLista}
             />
           </div>
         </div>
       )}
+
+      {/* MODAL DE CONFIRMAÇÃO DA EXCLUSÃO */}
+      {ocorrenciaParaExcluir !== null && (
+        <div className="fixed inset-0 z-10000 bg-black/80 flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-[#151515] border border-gray-700 rounded-2xl p-6 shadow-2xl">
+            <div className="w-14 h-14 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
+              <span className="text-red-400 text-3xl">!</span>
+            </div>
+
+            <h2 className="text-white text-xl font-bold font-nunito text-center">
+              Excluir ocorrência?
+            </h2>
+
+            <p className="text-gray-400 text-sm text-center mt-3">
+              Tem certeza de que deseja excluir esta ocorrência? Essa ação não
+              poderá ser desfeita.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 mt-6">
+              <button
+                type="button"
+                onClick={cancelarExclusao}
+                disabled={excluindo}
+                className="flex-1 py-3 rounded-lg border border-gray-600 text-gray-300 font-bold hover:bg-gray-800 transition disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="button"
+                onClick={confirmarExclusao}
+                disabled={excluindo}
+                className="flex-1 py-3 rounded-lg bg-red-500 text-white font-bold hover:bg-red-600 transition disabled:opacity-50"
+              >
+                {excluindo ? "Excluindo..." : "Sim, excluir"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE SUCESSO DA EXCLUSÃO */}
+      <ModalSucesso
+        aberto={modalExclusaoAberto}
+        titulo="Ocorrência excluída!"
+        mensagem="A ocorrência foi excluída com sucesso."
+        textoBotao="Continuar"
+        onConfirmar={() => setModalExclusaoAberto(false)}
+      />
     </main>
   );
 }

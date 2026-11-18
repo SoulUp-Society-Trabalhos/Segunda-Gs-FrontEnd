@@ -1,7 +1,11 @@
+
 import { useState } from "react";
 import type { FormEvent } from "react";
 
-import type { CriarOcorrencia, OpcaoOcorrencia } from "../types/Ocorrencia";
+import type {
+  CriarOcorrencia,
+  OpcaoOcorrencia,
+} from "../types/Ocorrencia";
 
 // DADOS DA OCORRÊNCIA RETORNADA PELO BACKEND
 export type OcorrenciaCriada = {
@@ -19,6 +23,22 @@ export type OcorrenciaCriada = {
     id: number;
     nomeOcorrencia: string;
   };
+  origem?: string;
+  status?: string;
+  dataOcorrencia?: string;
+  pessoa?: {
+    id: number;
+  } | null;
+};
+
+// DADOS ADICIONAIS PARA EDIÇÃO
+type OcorrenciaParaEdicao = OcorrenciaCriada & {
+  origem?: string;
+  status?: string;
+  dataOcorrencia?: string;
+  pessoa?: {
+    id: number;
+  } | null;
 };
 
 // PROPRIEDADES DO COMPONENTE
@@ -27,6 +47,7 @@ type FormularioOcorrenciaProps = {
   longitude: number;
   distritos: OpcaoOcorrencia[];
   categorias: OpcaoOcorrencia[];
+  ocorrenciaEdicao?: OcorrenciaParaEdicao | null;
   onClose: () => void;
   onSucesso: (ocorrencia: OcorrenciaCriada) => void;
 };
@@ -39,37 +60,70 @@ function dataHoraAtual() {
   return new Date(agora.getTime() - ajuste).toISOString().slice(0, 16);
 }
 
+// CONVERTER DATA DO BACKEND PARA O INPUT
+function formatarData(data?: string) {
+  if (!data) {
+    return dataHoraAtual();
+  }
+
+  return data.slice(0, 16);
+}
+
 export default function FormularioOcorrencia({
   latitude,
   longitude,
   distritos,
   categorias,
+  ocorrenciaEdicao,
   onClose,
   onSucesso,
 }: FormularioOcorrenciaProps) {
-  const [titulo, setTitulo] = useState("");
-  const [descricao, setDescricao] = useState("");
-  const [gravidade, setGravidade] = useState("1");
-  const [dataOcorrencia, setDataOcorrencia] = useState(dataHoraAtual());
-  const [distrito, setDistrito] = useState("");
-  const [categoria, setCategoria] = useState("");
+  // PREENCHER OS CAMPOS COM OS DADOS EXISTENTES QUANDO FOR EDITAR
+  const [titulo, setTitulo] = useState(
+    () => ocorrenciaEdicao?.nomeTitulo ?? "",
+  );
+
+  const [descricao, setDescricao] = useState(
+    () => ocorrenciaEdicao?.descOcorrencia ?? "",
+  );
+
+  const [gravidade, setGravidade] = useState(
+    () => String(ocorrenciaEdicao?.gravidade ?? 1),
+  );
+
+  const [dataOcorrencia, setDataOcorrencia] = useState(
+    () => formatarData(ocorrenciaEdicao?.dataOcorrencia),
+  );
+
+  const [distrito, setDistrito] = useState(
+    () => String(ocorrenciaEdicao?.distrito.id ?? ""),
+  );
+
+  const [categoria, setCategoria] = useState(
+    () => String(ocorrenciaEdicao?.categoria.id ?? ""),
+  );
 
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState("");
 
-  // GUARDA A OCORRÊNCIA CADASTRADA
-  const [ocorrenciaCriada, setOcorrenciaCriada] =
+  // GUARDA A OCORRÊNCIA SALVA
+  const [ocorrenciaSalva, setOcorrenciaSalva] =
     useState<OcorrenciaCriada | null>(null);
 
-  // CADASTRAR OCORRÊNCIA
-  async function cadastrarOcorrencia(evento: FormEvent<HTMLFormElement>) {
+  // VERIFICA SE ESTÁ EDITANDO
+  const estaEditando = ocorrenciaEdicao != null;
+
+  // CADASTRAR OU EDITAR OCORRÊNCIA
+  async function salvarOcorrencia(
+    evento: FormEvent<HTMLFormElement>,
+  ) {
     evento.preventDefault();
 
     try {
       setCarregando(true);
       setErro("");
 
-      // OBJETO COM OS DADOS DA OCORRÊNCIA
+      // OBJETO COM OS DADOS DO FORMULÁRIO
       const dados: CriarOcorrencia = {
         nomeTitulo: titulo,
         descOcorrencia: descricao,
@@ -85,36 +139,111 @@ export default function FormularioOcorrencia({
         },
       };
 
-      // REQUISIÇÃO PARA O BACKEND
-      const resposta = await fetch("/api/ocorrencias", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(dados),
-      });
+      let resposta: Response;
 
+      if (estaEditando) {
+        // REQUISIÇÃO PARA ATUALIZAR A OCORRÊNCIA
+        const dadosAtualizacao = {
+          ...dados,
+          origem: ocorrenciaEdicao.origem || "CIDADAO",
+          status: ocorrenciaEdicao.status || "ATIVA",
+          pessoa: ocorrenciaEdicao.pessoa
+            ? { id: ocorrenciaEdicao.pessoa.id }
+            : undefined,
+        };
+
+        resposta = await fetch(
+          `/api/ocorrencias/${ocorrenciaEdicao.id}`,
+          {
+            method: "PUT",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(dadosAtualizacao),
+          },
+        );
+      } else {
+        // REQUISIÇÃO PARA CADASTRAR A OCORRÊNCIA
+        resposta = await fetch("/api/ocorrencias", {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(dados),
+        });
+      }
+
+      // VERIFICAR RESPOSTA DO BACKEND
       if (!resposta.ok) {
         const mensagem = await resposta.text();
 
         throw new Error(
-          mensagem || `Erro ao cadastrar ocorrência: ${resposta.status}`,
+          mensagem ||
+            `Erro ao salvar ocorrência: ${resposta.status}`,
         );
       }
 
-      // RECEBE A OCORRÊNCIA CADASTRADA PELO BACKEND
-      const ocorrencia: OcorrenciaCriada = await resposta.json();
+      // LER A RESPOSTA DO BACKEND
+      const textoResposta = await resposta.text();
 
-      // ABRE O MODAL DE SUCESSO
-      setOcorrenciaCriada(ocorrencia);
+      let dadosResposta: Partial<OcorrenciaCriada> = {};
+
+      if (textoResposta.trim()) {
+        dadosResposta = JSON.parse(textoResposta);
+      }
+
+      // LOCALIZAR NOMES DO DISTRITO E DA CATEGORIA
+      const distritoSelecionado = distritos.find(
+        (item) => item.id === Number(distrito),
+      );
+
+      const categoriaSelecionada = categorias.find(
+        (item) => item.id === Number(categoria),
+      );
+
+      // MONTAR OBJETO ATUALIZADO
+      const ocorrencia: OcorrenciaCriada = {
+        ...(ocorrenciaEdicao ?? {}),
+        ...dadosResposta,
+        id: dadosResposta.id ?? ocorrenciaEdicao?.id ?? 0,
+        nomeTitulo: titulo,
+        descOcorrencia: descricao,
+        gravidade: Number(gravidade),
+        latitude,
+        longitude,
+        distrito: {
+          id: Number(distrito),
+          nomeDistrito:
+            dadosResposta.distrito?.nomeDistrito ??
+            distritoSelecionado?.nome ??
+            ocorrenciaEdicao?.distrito.nomeDistrito ??
+            "",
+        },
+        categoria: {
+          id: Number(categoria),
+          nomeOcorrencia:
+            dadosResposta.categoria?.nomeOcorrencia ??
+            categoriaSelecionada?.nome ??
+            ocorrenciaEdicao?.categoria.nomeOcorrencia ??
+            "",
+        },
+        origem: ocorrenciaEdicao?.origem ?? "CIDADAO",
+        status: ocorrenciaEdicao?.status ?? "ATIVA",
+        dataOcorrencia,
+        pessoa: ocorrenciaEdicao?.pessoa ?? null,
+      };
+
+      // ABRIR MODAL DE SUCESSO
+      setOcorrenciaSalva(ocorrencia);
     } catch (e) {
-      console.error("Erro ao cadastrar ocorrência:", e);
+      console.error("Erro ao salvar ocorrência:", e);
 
       setErro(
         e instanceof Error
           ? e.message
-          : "Não foi possível cadastrar a ocorrência.",
+          : "Não foi possível salvar a ocorrência.",
       );
     } finally {
       setCarregando(false);
@@ -122,9 +251,9 @@ export default function FormularioOcorrencia({
   }
 
   return (
-    <div className="fixed inset-0 z-10000000000000000000001 bg-black/80 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-100000 bg-black/80 flex items-center justify-center p-4">
       <div className="bg-[#151515] border border-gray-800 rounded-2xl w-full max-w-xl max-h-[90vh] overflow-y-auto p-6">
-        {ocorrenciaCriada ? (
+        {ocorrenciaSalva ? (
           // MODAL DE SUCESSO
           <div className="flex flex-col items-center text-center py-8">
             <div className="w-20 h-20 rounded-full bg-[#00c853]/20 flex items-center justify-center mb-5">
@@ -132,11 +261,15 @@ export default function FormularioOcorrencia({
             </div>
 
             <h2 className="text-2xl font-bold font-nunito text-white mb-3">
-              Ocorrência cadastrada!
+              {estaEditando
+                ? "Ocorrência atualizada!"
+                : "Ocorrência cadastrada!"}
             </h2>
 
             <p className="text-gray-400 mb-2">
-              Sua ocorrência foi registrada com sucesso.
+              {estaEditando
+                ? "Sua ocorrência foi atualizada com sucesso."
+                : "Sua ocorrência foi registrada com sucesso."}
             </p>
 
             <p className="text-gray-400 text-sm mb-8">
@@ -146,12 +279,12 @@ export default function FormularioOcorrencia({
             <button
               type="button"
               onClick={() => {
-                onSucesso(ocorrenciaCriada);
+                onSucesso(ocorrenciaSalva);
                 onClose();
               }}
               className="w-full py-3 rounded-lg bg-[#00c853] text-black font-bold hover:bg-green-400 transition"
             >
-              Ver no mapa
+              Voltar ao mapa
             </button>
           </div>
         ) : (
@@ -160,17 +293,22 @@ export default function FormularioOcorrencia({
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-2xl font-bold font-nunito text-white">
-                  Registrar ocorrência
+                  {estaEditando
+                    ? "Editar ocorrência"
+                    : "Registrar ocorrência"}
                 </h2>
 
                 <p className="text-gray-400 text-sm mt-1">
-                  Preencha os dados do problema encontrado.
+                  {estaEditando
+                    ? "Altere os dados da sua ocorrência."
+                    : "Preencha os dados do problema encontrado."}
                 </p>
               </div>
 
               <button
                 type="button"
                 onClick={onClose}
+                disabled={carregando}
                 className="text-gray-400 hover:text-white text-2xl"
               >
                 ×
@@ -178,7 +316,7 @@ export default function FormularioOcorrencia({
             </div>
 
             <form
-              onSubmit={cadastrarOcorrencia}
+              onSubmit={salvarOcorrencia}
               className="flex flex-col gap-4"
             >
               {/* TÍTULO */}
@@ -312,7 +450,9 @@ export default function FormularioOcorrencia({
               </div>
 
               {/* ERRO */}
-              {erro && <p className="text-red-400 text-sm">{erro}</p>}
+              {erro && (
+                <p className="text-red-400 text-sm">{erro}</p>
+              )}
 
               {/* BOTÕES */}
               <div className="flex flex-col sm:flex-row gap-3 mt-2">
@@ -330,7 +470,13 @@ export default function FormularioOcorrencia({
                   disabled={carregando}
                   className="flex-1 py-3 rounded-lg bg-[#00c853] text-black font-bold hover:bg-green-400 transition disabled:opacity-50"
                 >
-                  {carregando ? "Cadastrando..." : "Cadastrar ocorrência"}
+                  {carregando
+                    ? estaEditando
+                      ? "Salvando..."
+                      : "Cadastrando..."
+                    : estaEditando
+                      ? "Salvar alterações"
+                      : "Cadastrar ocorrência"}
                 </button>
               </div>
             </form>
