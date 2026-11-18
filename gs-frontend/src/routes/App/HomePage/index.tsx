@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -157,14 +156,13 @@ export default function HomePage() {
   const [ocorrencias, setOcorrencias] = useState<OcorrenciaComProprietario[]>(
     [],
   );
-
   const [carregandoOcorrencias, setCarregandoOcorrencias] = useState(true);
   const [erroOcorrencias, setErroOcorrencias] = useState("");
 
   // Modal de confirmação da exclusão.
-  const [ocorrenciaParaExcluir, setOcorrenciaParaExcluir] = useState<number | null>(
-    null,
-  );
+  const [ocorrenciaParaExcluir, setOcorrenciaParaExcluir] = useState<
+    number | null
+  >(null);
 
   // Controle da requisição de exclusão.
   const [excluindo, setExcluindo] = useState(false);
@@ -509,6 +507,10 @@ export default function HomePage() {
       ocorrencia.pessoa?.id === pessoa.id,
   );
 
+  // Abrir a página individual da ocorrência.
+  function abrirOcorrencia(id: number) {
+    navigate(`/app/ocorrencias/${id}`);
+  }
   // Logout.
   async function fazerLogout() {
     try {
@@ -570,6 +572,9 @@ export default function HomePage() {
                     <Marker
                       key={ocorrencia.id}
                       position={[ocorrencia.latitude, ocorrencia.longitude]}
+                      eventHandlers={{
+                        click: () => abrirOcorrencia(ocorrencia.id),
+                      }}
                     >
                       <Popup>
                         <div className="min-w-40">
@@ -594,6 +599,14 @@ export default function HomePage() {
                             {ocorrencia.categoria?.nomeOcorrencia ||
                               "Não informada"}
                           </p>
+
+                          <button
+                            type="button"
+                            onClick={() => abrirOcorrencia(ocorrencia.id)}
+                            className="mt-3 w-full bg-[#00c853] text-black font-bold rounded-lg py-2"
+                          >
+                            Ver ocorrência
+                          </button>
                         </div>
                       </Popup>
                     </Marker>

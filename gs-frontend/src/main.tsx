@@ -19,6 +19,7 @@ import AuthPage from "./routes/App/AuthPage/index.tsx";
 import Cadastro from "./routes/App/Cadastro/index.tsx";
 import Login from "./routes/App/Login/index.tsx";
 import HomePage from "./routes/App/HomePage/index.tsx";
+import PagOcorrencia from "./routes/App/PagOcorrencia/index.tsx";
 
 const router = createBrowserRouter([
   {
@@ -73,6 +74,10 @@ const router = createBrowserRouter([
           {
             path: "home-page",
             element: <HomePage />,
+          },
+          {
+            path: "ocorrencias/:id",
+            element: <PagOcorrencia />,
           },
         ],
       },

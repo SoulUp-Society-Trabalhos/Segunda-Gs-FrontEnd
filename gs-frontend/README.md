@@ -12,6 +12,12 @@ Utilizar a tecnologia para aproximar os usuários das informações e serviços 
 
 ---
 
+## 📷 Fotos do Sistemas
+
+
+
+---
+
 ## 🛠️ Tecnologias Utilizadas
 
 As seguintes tecnologias foram utilizadas no desenvolvimento:
@@ -119,25 +125,30 @@ gs-frontend/
 
 ### Breno Elisio Leal Lobato — RM569961
 
+![Breno](./public/integrantes/foto-breno.jpg)
 - GitHub: [Brenoell](https://github.com/Brenoell)
 - LinkedIn: [Perfil](https://www.linkedin.com/in/breno-elisio-2b123a405/)
 
 ### Christian Verzellesi Barbuto — RM568677
 
+![Christian](./public/integrantes/foto-christian.png)
 - GitHub: [ChrisVerBarbuto](https://github.com/ChrisVerBarbuto)
 - LinkedIn: [Perfil](https://www.linkedin.com/in/christian-verzellesi-barbuto-938463382/)
 
 ### Eduardo Pizzoli Junior — RM569529
 
+![EduardoP](./public/integrantes/foto-eduardop.jpg)
 - GitHub: [dudupizzoli](https://github.com/dudupizzoli)
 
 ### Eduardo Nery Kurahara — RM570916
 
+![Eduardo](./public/integrantes/foto-eduardo.png)
 - GitHub: [edu64123](https://github.com/edu64123)
 - LinkedIn: [Perfil](https://www.linkedin.com/in/eduardo-kurahara-786b003b9/)
 
 ### Gustavo Lizier Pontes — RM573234
 
+![Gustavo](./public/integrantes/foto-gustavo.png)
 - GitHub: [gustavopontes1104](https://github.com/gustavopontes1104)
 - LinkedIn: [Perfil](https://www.linkedin.com/in/gustavo-pontes-07aa6a3b3/)
 
@@ -224,13 +235,15 @@ npm run dev
 
 ## 👾 Repositório Público - FRONT
 
-[https://github.com/Brenoell/front-end-1-Challenge](https://github.com/Brenoell/front-end-1-Challenge)
-[https://segunda-gs-front-end-y88h-beige.vercel.app/](https://segunda-gs-front-end-y88h-beige.vercel.app/)
+GITHUB: [https://github.com/Brenoell/front-end-1-Challenge](https://github.com/Brenoell/front-end-1-Challenge)
+
+API PUBLICA: [https://segunda-gs-front-end-y88h-beige.vercel.app/](https://segunda-gs-front-end-y88h-beige.vercel.app/)
 
 ## ☕ Repositório Público - JAVA
 
-[https://gs-2-entrega-java.onrender.com](https://gs-2-entrega-java.onrender.com)
-[https://github.com/Brenoell/GS-2--Entrega-Java.git](https://github.com/Brenoell/GS-2--Entrega-Java.git)
+GITHUB: [https://gs-2-entrega-java.onrender.com](https://gs-2-entrega-java.onrender.com)
+
+API PUBLICA: [https://github.com/Brenoell/GS-2--Entrega-Java.git](https://github.com/Brenoell/GS-2--Entrega-Java.git)
 
 ## 📞 Contatos
 
