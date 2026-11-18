@@ -1,5 +1,5 @@
 
-import { api } from "./Api";
+import { api } from "./Api.ts";
 import type { Ocorrencia } from "../types/Ocorrencia";
 
 // Busca uma ocorrência específica pelo ID.

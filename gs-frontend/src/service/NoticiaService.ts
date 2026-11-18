@@ -1,5 +1,5 @@
 
-import { api } from "./Api";
+import { api } from "./Api.ts";
 
 import type { Noticia, RespostaNoticias } from "../types/Noticia";
 
