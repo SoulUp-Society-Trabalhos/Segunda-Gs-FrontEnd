@@ -1,5 +1,5 @@
 
-import { api } from "./Api.ts";
+import { api } from "./Api";
 import type { DadosPessoa } from "../types/Pessoa";
 
 // Busca uma pessoa pelo ID
