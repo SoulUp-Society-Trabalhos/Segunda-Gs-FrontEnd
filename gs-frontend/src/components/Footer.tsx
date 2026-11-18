@@ -12,7 +12,7 @@ export default function Footer() {
   ];
   return (
     <footer className="bg-black px-[5%] pb-8 pt-16 font-['Montserrat',sans-serif] text-[#00c852]">
-      <div className="max-w-md">
+      <div className="w-full max-w-md">
         <h3 className="mb-5 text-xl font-semibold sm:text-2xl">Um pouco sobre nós</h3>
 
         <p className="mb-6 text-sm leading-6 opacity-80 sm:text-base sm:leading-7">
@@ -31,7 +31,7 @@ export default function Footer() {
       </div>
       <div className="mt-16 border-t border-[#00c852]/40 pt-6">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between lg:gap-10">
-          <nav className="flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium sm:text-base">
+          <nav className="flex flex-wrap gap-x-4 gap-y-3 text-sm font-medium sm:gap-x-6 sm:text-base">
             {links.map((link) => (
               <a
                 key={link.label}
@@ -43,7 +43,7 @@ export default function Footer() {
             ))}
           </nav>
 
-          <p className="max-w-full text-xs leading-5 sm:text-sm lg:max-w-sm lg:text-right">
+          <p className="w-full max-w-full text-xs leading-5 sm:text-sm lg:max-w-sm lg:text-right">
             Breno Lobato, Gustavo Pontes, Christian Barbuto, Eduardo Pizzoli,
             Eduardo Nery
           </p>

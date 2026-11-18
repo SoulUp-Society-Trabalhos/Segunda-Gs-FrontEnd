@@ -1,9 +1,3 @@
-export type DadosGeoJSON = {
-  type: string;
-  features: {
-    geometry: {
-      type: string;
-      coordinates: any;
-    };
-  }[];
-};
+import type { FeatureCollection, Polygon, MultiPolygon } from "geojson";
+
+export type DadosGeoJSON = FeatureCollection<Polygon | MultiPolygon>;
