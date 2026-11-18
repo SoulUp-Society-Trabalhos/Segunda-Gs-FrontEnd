@@ -1,9 +1,12 @@
-
+import { useEffect } from "react";
 import { Link } from "react-router";
 import { HiChevronDoubleRight } from "react-icons/hi";
 import Hero from "../../components/Hero";
 
 export default function Home() {
+  useEffect(() => {
+    document.title = "Home | MiniCity";
+  }, []);
   return (
     <main>
       <Hero

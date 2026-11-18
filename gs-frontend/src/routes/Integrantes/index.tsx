@@ -1,5 +1,7 @@
-import { useState } from "react";
+
+
 import Hero from "../../components/Hero";
+import { useState, useEffect } from "react";
 
 type Integrante = {
   id: number;
@@ -32,7 +34,8 @@ const integrantes: Integrante[] = [
     sala: "1TDSPJ",
     foto: "/integrantes/foto-christian.png",
     email: "Chrisvbarbuto@gmail.com",
-    linkedin: "https://www.linkedin.com/in/christian-verzellesi-barbuto-938463382/",
+    linkedin:
+      "https://www.linkedin.com/in/christian-verzellesi-barbuto-938463382/",
     github: "https://github.com/ChrisVerBarbuto",
     descricao: "Breve descrição sobre o integrante e o que ele faz na equipe.",
   },
@@ -72,13 +75,17 @@ const integrantes: Integrante[] = [
 ];
 
 export default function Integrantes() {
+  useEffect(() => {
+    document.title = "Integrantes | MiniCity";
+  }, []);
   const [aberto, setAberto] = useState<number | null>(null);
 
   const alternar = (id: number) => {
     setAberto((atual) => (atual === id ? null : id));
   };
-
+  
   return (
+    
     <main>
       <Hero
         titulo="INTE GRANTES"

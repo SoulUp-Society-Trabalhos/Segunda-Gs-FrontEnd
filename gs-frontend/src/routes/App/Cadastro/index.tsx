@@ -1,9 +1,13 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import ModalSucesso from "../../../components/ModalSucesso";
 import { cadastrarUsuario } from "../../../service/AuthService";
 
 export default function Cadastro() {
+  useEffect(() => {
+    document.title = "Cadastro | MiniCity";
+  }, []);
+
   const navigate = useNavigate();
 
   // Estados dos campos

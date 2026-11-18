@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Hero from "../../components/Hero";
 
 const perguntas = [
@@ -30,6 +30,10 @@ export default function Faq() {
   function alternar(index: number) {
     setAberta(aberta === index ? null : index);
   }
+
+  useEffect(() => {
+    document.title = "Faq | MiniCity";
+  }, []);
 
   return (
     <main>

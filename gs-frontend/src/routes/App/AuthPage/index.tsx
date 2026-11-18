@@ -1,6 +1,11 @@
+import { useEffect } from "react";
 import { Link } from "react-router";
 
 export default function AuthPage() {
+  useEffect(() => {
+    document.title = "AuthPage | MiniCity";
+  }, []);
+
   return (
     <main className="min-h-screen bg-black flex items-center justify-center px-6 font-nunito">
       <section className="w-full max-w-md text-center">

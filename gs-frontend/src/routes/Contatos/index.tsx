@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import Hero from "../../components/Hero";
 
 export default function Contatos() {
@@ -9,7 +9,9 @@ export default function Contatos() {
     event.currentTarget.reset();
     setMensagemEnviada(true);
   }
-
+  useEffect(() => {
+    document.title = "Contatos | MiniCity";
+  }, []);
   return (
     <main>
       <Hero
@@ -27,10 +29,7 @@ export default function Contatos() {
             equipe MiniCity.
           </p>
 
-          <form
-            onSubmit={enviarMensagem}
-            className="flex flex-col gap-6"
-          >
+          <form onSubmit={enviarMensagem} className="flex flex-col gap-6">
             <div className="flex flex-col gap-2">
               <label htmlFor="nome" className="font-nunito font-semibold">
                 Nome

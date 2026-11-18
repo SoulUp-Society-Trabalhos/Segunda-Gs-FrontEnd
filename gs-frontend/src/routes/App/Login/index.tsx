@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 
 import { fazerLogin as autenticar } from "../../../service/AuthService";
@@ -7,6 +7,9 @@ import type { DadosLogin } from "../../../types/Auth";
 
 export default function Login() {
   const navigate = useNavigate();
+  useEffect(() => {
+    document.title = "Login | MiniCity";
+  }, []);
 
   // Dados do formulário
   const [email, setEmail] = useState("");

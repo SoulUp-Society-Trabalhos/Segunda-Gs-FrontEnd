@@ -1,6 +1,11 @@
 import Hero from "../../components/Hero";
+import {  useEffect } from "react";
 
 export default function Sobre() {
+  useEffect(() => {
+    document.title = "Sobre | MiniCity";
+  }, []);
+
   return (
     <main>
       <Hero
