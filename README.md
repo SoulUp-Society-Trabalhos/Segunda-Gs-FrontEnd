@@ -14,10 +14,13 @@ Utilizar a tecnologia para aproximar os usuários das informações e serviços 
 
 ## 📷 Fotos do Sistemas
 
-![Home](./public/sistema/fotos/home.png)
-![Sobre](./public/sistema/fotos/sobre.png)
-![Login](./public/sistema/fotos/login.png)
-![Mapa](./public/sistema/fotos/mapa.png)
+![Home](./gs-frontend/public/sistema/fotos/home.png)
+
+![Sobre](./gs-frontend/public/sistema/fotos/sobre.png)
+
+![Login](./gs-frontend/public/sistema/fotos/login.png)
+
+![Mapa](./gs-frontend/public/sistema/fotos/mapa.png)
 
 ---
 
@@ -128,31 +131,36 @@ gs-frontend/
 
 ### Breno Elisio Leal Lobato — RM569961
 
-![Breno](./public/integrantes/foto-breno.jpg)
+![Breno](./gs-frontend/public/integrantes/foto-breno.jpg)
+
 - GitHub: [Brenoell](https://github.com/Brenoell)
 - LinkedIn: [Perfil](https://www.linkedin.com/in/breno-elisio-2b123a405/)
 
 ### Christian Verzellesi Barbuto — RM568677
 
-![Christian](./public/integrantes/foto-christian.png)
+![Christian](./gs-frontend/public/integrantes/foto-christian.png)
+
 - GitHub: [ChrisVerBarbuto](https://github.com/ChrisVerBarbuto)
 - LinkedIn: [Perfil](https://www.linkedin.com/in/christian-verzellesi-barbuto-938463382/)
 
 ### Eduardo Pizzoli Junior — RM569529
 
-![EduardoP](./public/integrantes/foto-eduardop.jpg)
+![EduardoP](./gs-frontend/public/integrantes/foto-eduardop.jpg)
+
 - GitHub: [dudupizzoli](https://github.com/dudupizzoli)
 - LinkedIn: [dudupizzoli](https://www.linkedin.com/in/eduardo-pizzoli-junior-a2964640b)
 
 ### Eduardo Nery Kurahara — RM570916
 
-![Eduardo](./public/integrantes/foto-eduardo.png)
+![Eduardo](./gs-frontend/public/integrantes/foto-eduardo.png)
+
 - GitHub: [edu64123](https://github.com/edu64123)
 - LinkedIn: [Perfil](https://www.linkedin.com/in/eduardo-kurahara-786b003b9/)
 
 ### Gustavo Lizier Pontes — RM573234
 
-![Gustavo](./public/integrantes/foto-gustavo.png)
+![Gustavo](./gs-frontend/public/integrantes/foto-gustavo.png)
+
 - GitHub: [gustavopontes1104](https://github.com/gustavopontes1104)
 - LinkedIn: [Perfil](https://www.linkedin.com/in/gustavo-pontes-07aa6a3b3/)
 
