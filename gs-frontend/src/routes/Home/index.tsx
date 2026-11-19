@@ -29,14 +29,14 @@ export default function Home() {
           </p>
 
           <Link
-            to="/faq"
+            to="/proposta"
             className="mt-8 mr-3 inline-block max-w-full rounded-md border-2 border-[#00c852] px-8 py-3 text-center font-nunito font-bold text-[#00c852] transition hover:bg-[#00c852] hover:text-black"
           >
             Página 1<HiChevronDoubleRight />
           </Link>
 
           <Link
-            to="/faq"
+            to="/proposta2"
             className="mt-8 inline-block max-w-full rounded-md border-2 border-[#00c852] px-8 py-3 text-center font-nunito font-bold text-[#00c852] transition hover:bg-[#00c852] hover:text-black"
           >
             Página 2 <HiChevronDoubleRight />
