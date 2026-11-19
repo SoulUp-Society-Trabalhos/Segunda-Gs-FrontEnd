@@ -16,7 +16,7 @@ export default function Home() {
 
       <section className="bg-black px-[5%] py-12 sm:py-16 md:py-20">
         <div className="mx-auto max-w-7xl">
-          <p className="font-nunito text-sm font-bold text-[  ]">
+          <p className="font-nunito text-sm font-bold text-[#00c852]">
             01 - PÁGINA DE PROPOSTAS
           </p>
 
