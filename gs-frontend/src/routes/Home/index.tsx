@@ -47,7 +47,7 @@ export default function Home() {
       <section className="bg-[#00c852] px-[5%] py-12 sm:py-16 md:py-20">
         <div className="mx-auto max-w-7xl">
           <p className="font-nunito text-sm font-bold text-black">
-            02 - NOSSAS PROPOSTAS
+            02 - NOSSOS INTEGRANTES
           </p>
 
           <h2 className="mt-4 font-anton text-4xl sm:text-5xl md:text-7xl text-black">
