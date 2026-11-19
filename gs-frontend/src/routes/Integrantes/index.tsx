@@ -18,7 +18,7 @@ type Integrante = {
 const integrantes: Integrante[] = [
   {
     id: 1,
-    nome: "Breno Elisio Leal Loabto",
+    nome: "Breno Elisio Leal Lobato",
     rm: "569961",
     sala: "1TDSPJ",
     foto: "/integrantes/foto-breno.jpg",
