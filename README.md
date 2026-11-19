@@ -8,13 +8,16 @@ A plataforma reúne informações sobre a cidade, incluindo mapa interativo, not
 
 ## 🎯 Objetivo
 
-Utilizar a tecnologia para aproximar os usuários das informações e serviços relacionados à cidade, por meio de uma plataforma digital.
+Utilizar a tecnologia para aproximar os usuários das informações e serviços relacionados à cidade, por meio de uma plataforma digital. Fornecer um mapa para o usuario, e nesse mapa sera fornecido ocorrencias de outros usuarios e de demais fontes. Além de juntar notícias da cidade escolhida.
 
 ---
 
 ## 📷 Fotos do Sistemas
 
-
+![Home](./public/sistema/fotos/home.png)
+![Sobre](./public/sistema/fotos/sobre.png)
+![Login](./public/sistema/fotos/login.png)
+![Mapa](./public/sistema/fotos/mapa.png)
 
 ---
 
