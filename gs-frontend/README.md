@@ -139,6 +139,7 @@ gs-frontend/
 
 ![EduardoP](./public/integrantes/foto-eduardop.jpg)
 - GitHub: [dudupizzoli](https://github.com/dudupizzoli)
+- LinkedIn: [dudupizzoli](https://www.linkedin.com/in/eduardo-pizzoli-junior-a2964640b)
 
 ### Eduardo Nery Kurahara — RM570916
 

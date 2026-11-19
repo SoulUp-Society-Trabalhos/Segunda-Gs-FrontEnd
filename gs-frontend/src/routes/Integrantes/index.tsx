@@ -25,7 +25,7 @@ const integrantes: Integrante[] = [
     email: "brenobell03@gmail.com",
     linkedin: "https://www.linkedin.com/in/breno-elisio-2b123a405/",
     github: "https://github.com/Brenoell",
-    descricao: "Breve descrição sobre o integrante e o que ele faz na equipe.",
+    descricao: "Fez Java/Front",
   },
   {
     id: 2,
@@ -37,7 +37,7 @@ const integrantes: Integrante[] = [
     linkedin:
       "https://www.linkedin.com/in/christian-verzellesi-barbuto-938463382/",
     github: "https://github.com/ChrisVerBarbuto",
-    descricao: "Breve descrição sobre o integrante e o que ele faz na equipe.",
+    descricao: "Fez projetos de IA.",
   },
   {
     id: 3,
@@ -48,7 +48,7 @@ const integrantes: Integrante[] = [
     email: "edupizzolijr@gmail.com",
     linkedin: "https://www.linkedin.com/in/eduardo-pizzoli-junior-a2964640b",
     github: "https://github.com/dudupizzoli",
-    descricao: "Breve descrição sobre o integrante e o que ele faz na equipe.",
+    descricao: "Fez projetos de Modelos de Negocio e Python",
   },
   {
     id: 4,
@@ -59,7 +59,7 @@ const integrantes: Integrante[] = [
     email: "eduardonerykurahara@gmail.com",
     linkedin: "https://www.linkedin.com/in/eduardo-kurahara-786b003b9",
     github: "https://github.com/edu64123",
-    descricao: "Breve descrição sobre o integrante e o que ele faz na equipe.",
+    descricao: "Fez Java.",
   },
   {
     id: 5,
@@ -70,7 +70,7 @@ const integrantes: Integrante[] = [
     email: "gulizpon@gmail.com",
     linkedin: "https://www.linkedin.com/in/gustavo-pontes-07aa6a3b3",
     github: "https://github.com/gustavopontes1104",
-    descricao: "Breve descrição sobre o integrante e o que ele faz na equipe.",
+    descricao: "Fez banco de dados.",
   },
 ];
 
