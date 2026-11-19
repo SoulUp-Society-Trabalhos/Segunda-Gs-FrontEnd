@@ -246,6 +246,10 @@ GITHUB: [https://gs-2-entrega-java.onrender.com](https://gs-2-entrega-java.onren
 
 API PUBLICA: [https://github.com/Brenoell/GS-2--Entrega-Java.git](https://github.com/Brenoell/GS-2--Entrega-Java.git)
 
+## ☕ Link do video Yt
+
+VIDEO: [https://youtu.be/AZjuyEcc1hw](https://youtu.be/AZjuyEcc1hw)
+
 ## 📞 Contatos
 
 - Breno: [brenobell03@gmail.com](mailto:brenobell03@gmail.com)
